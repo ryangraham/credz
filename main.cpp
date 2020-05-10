@@ -31,10 +31,19 @@ int get(const std::string &url, std::string &buffer, const std::string &session_
         return -1;
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
     res = curl_easy_perform(curl);
+
+    if (res == CURLE_OK)
+    {
+        long response_code;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+        std::cout << response_code << std::endl;
+    }
+
     curl_easy_cleanup(curl);
 
     // TODO: check response code
@@ -62,6 +71,14 @@ int post(const std::string &url, const std::string &payload, std::string &buffer
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
     res = curl_easy_perform(curl);
+
+    if (res == CURLE_OK)
+    {
+        long response_code;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+        std::cout << response_code << std::endl;
+    }
+
     curl_easy_cleanup(curl);
 
     // TODO: check response code
@@ -193,6 +210,21 @@ std::string get_app_link(const std::string &session_id, const std::string &org)
     return NULL;
 }
 
+std::string get_saml_assertion(const std::string &app_link, const std::string &session_id)
+{
+    std::string buffer;
+
+    get(app_link, buffer, session_id);
+    // json response = json::parse(buffer);
+
+    // std::cout
+    //     << response.dump(4) << std::endl;
+
+    std::cout << buffer << std::endl;
+
+    return "";
+}
+
 int main(void)
 {
     std::string username = "";
@@ -219,6 +251,8 @@ int main(void)
 
     std::string app_link = get_app_link(session_id, org);
     std::cout << app_link << std::endl;
+
+    get_saml_assertion(app_link, session_id);
 
     // TODO: get saml assertion
 
