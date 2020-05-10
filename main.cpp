@@ -55,7 +55,7 @@ int main(void)
 
     CURL *curl;
     CURLcode res;
-    std::string readBuffer;
+    std::string buffer;
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -68,17 +68,21 @@ int main(void)
     std::string url = "https://blvd.okta.com/api/v1/authn";
 
     curl = curl_easy_init();
-    if (curl)
-    {
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-        res = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
+    if (!curl)
+        return -1;
 
-        std::cout << readBuffer << std::endl;
-    }
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+
+    json response = json::parse(buffer);
+
+    std::cout
+        << response.dump(4) << std::endl;
+
     return 0;
 }
