@@ -7,10 +7,35 @@
 
 using json = nlohmann::json;
 
-static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
+static size_t write_callback(void *buffer, size_t size, size_t count, void *string)
 {
-    ((std::string *)userp)->append((char *)contents, size * nmemb);
-    return size * nmemb;
+    ((std::string *)string)->append((char *)buffer, size * count);
+    return size * count;
+}
+
+int post(const std::string &url, const std::string &payload, std::string &buffer)
+{
+    CURL *curl;
+    CURLcode res;
+
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, "charset: utf-8");
+
+    curl = curl_easy_init();
+    if (!curl)
+        return -1;
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+
+    return 0;
 }
 
 int password_prompt(std::string &password)
@@ -53,31 +78,14 @@ int main(void)
     std::cout << std::endl;
     //std::cout << password << std::endl;
 
-    CURL *curl;
-    CURLcode res;
-    std::string buffer;
-    struct curl_slist *headers = NULL;
-    headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "charset: utf-8");
-
     json auth;
     auth["username"] = username;
     auth["password"] = password;
     std::string payload = auth.dump();
     std::string url = "https://blvd.okta.com/api/v1/authn";
+    std::string buffer;
 
-    curl = curl_easy_init();
-    if (!curl)
-        return -1;
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    res = curl_easy_perform(curl);
-    curl_easy_cleanup(curl);
+    post(url, payload, buffer);
 
     json response = json::parse(buffer);
 
