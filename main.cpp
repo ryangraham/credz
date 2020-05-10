@@ -38,6 +38,20 @@ int post(const std::string &url, const std::string &payload, std::string &buffer
     return 0;
 }
 
+json okta_auth(const std::string &username, const std::string &password, const std::string &org)
+{
+    json auth;
+    auth["username"] = username;
+    auth["password"] = password;
+    std::string payload = auth.dump();
+    std::string url = "https://" + org + ".okta.com/api/v1/authn";
+    std::string buffer;
+
+    post(url, payload, buffer);
+
+    return json::parse(buffer);
+}
+
 int password_prompt(std::string &password)
 {
     struct termios tty;
@@ -76,18 +90,9 @@ int main(void)
     username_prompt(username);
     password_prompt(password);
     std::cout << std::endl;
-    //std::cout << password << std::endl;
 
-    json auth;
-    auth["username"] = username;
-    auth["password"] = password;
-    std::string payload = auth.dump();
-    std::string url = "https://blvd.okta.com/api/v1/authn";
-    std::string buffer;
-
-    post(url, payload, buffer);
-
-    json response = json::parse(buffer);
+    std::string org = "blvd";
+    json response = okta_auth(username, password, org);
 
     std::cout
         << response.dump(4) << std::endl;
