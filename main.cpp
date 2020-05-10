@@ -3,6 +3,9 @@
 #include <termios.h>
 #include <unistd.h>
 #include <curl/curl.h>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -58,8 +61,10 @@ int main(void)
     headers = curl_slist_append(headers, "Content-Type: application/json");
     headers = curl_slist_append(headers, "charset: utf-8");
 
-    // TODO: use nlohmann
-    std::string payload = R"({ "username": ")" + username + R"(", "password": ")" + password + R"(" })";
+    json auth;
+    auth["username"] = username;
+    auth["password"] = password;
+    std::string payload = auth.dump();
     std::string url = "https://blvd.okta.com/api/v1/authn";
 
     curl = curl_easy_init();
