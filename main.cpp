@@ -35,6 +35,8 @@ int post(const std::string &url, const std::string &payload, std::string &buffer
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
+    // TODO: check response code
+
     return 0;
 }
 
@@ -49,7 +51,12 @@ json okta_auth(const std::string &username, const std::string &password, const s
 
     post(url, payload, buffer);
 
-    return json::parse(buffer);
+    json response = json::parse(buffer);
+
+    std::cout << response["status"] << std::endl;
+    // TODO: Check status
+
+    return response;
 }
 
 int password_prompt(std::string &password)
@@ -82,6 +89,50 @@ void username_prompt(std::string &username)
     std::cin >> username;
 }
 
+std::string wait_for_push(const std::string &next_url, const std::string &payload)
+{
+    std::string buffer;
+    post(next_url, payload, buffer);
+    json response = json::parse(buffer);
+    if (response["status"] == "SUCCESS")
+        return response["sessionToken"];
+
+    // TODO: handle timeout and rejection in factorStatus
+
+    return wait_for_push(next_url, payload);
+}
+
+std::string verify_push(const json &factor, const std::string &state_token)
+{
+    json body;
+    body["stateToken"] = state_token;
+    std::string payload = body.dump();
+    std::string url = factor["_links"]["verify"]["href"];
+    std::string buffer;
+
+    std::cout << url << std::endl;
+    std::cout << payload << std::endl;
+
+    post(url, payload, buffer);
+
+    json response = json::parse(buffer);
+    std::cout << response["status"] << std::endl;
+
+    std::string next_url = response["_links"]["next"]["href"];
+
+    return wait_for_push(next_url, payload);
+}
+
+std::string verify_mfa(const json &factors, const std::string &state_token)
+{
+    for (auto &factor : factors)
+        if (factor["factorType"] == "push")
+            return verify_push(factor, state_token);
+
+    // TODO: fix
+    return NULL;
+}
+
 int main(void)
 {
     std::string username = "";
@@ -91,11 +142,20 @@ int main(void)
     password_prompt(password);
     std::cout << std::endl;
 
+    // TODO: Prompt for org
     std::string org = "blvd";
     json response = okta_auth(username, password, org);
 
-    std::cout
-        << response.dump(4) << std::endl;
+    std::string state_token = response["stateToken"];
+
+    json factors = response["_embedded"]["factors"];
+
+    std::string session_token = verify_mfa(factors, state_token);
+
+    std::cout << session_token << std::endl;
+
+    // std::cout
+    //     << response.dump(4) << std::endl;
 
     return 0;
 }
