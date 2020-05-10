@@ -133,6 +133,20 @@ std::string verify_mfa(const json &factors, const std::string &state_token)
     return NULL;
 }
 
+std::string get_session_id(const std::string &session_token, const std::string &org)
+{
+    json body;
+    body["sessionToken"] = session_token;
+    std::string payload = body.dump();
+    std::string url = "https://" + org + ".okta.com/api/v1/sessions";
+    std::string buffer;
+
+    post(url, payload, buffer);
+    json response = json::parse(buffer);
+
+    return response["id"];
+}
+
 int main(void)
 {
     std::string username = "";
@@ -153,6 +167,13 @@ int main(void)
     std::string session_token = verify_mfa(factors, state_token);
 
     std::cout << session_token << std::endl;
+
+    std::string session_id = get_session_id(session_token, org);
+    std::cout << session_id << std::endl;
+
+    // TODO: get apps
+
+    // TODO: get saml assertion
 
     // std::cout
     //     << response.dump(4) << std::endl;
