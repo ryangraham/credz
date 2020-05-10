@@ -13,6 +13,35 @@ static size_t write_callback(void *buffer, size_t size, size_t count, void *stri
     return size * count;
 }
 
+int get(const std::string &url, std::string &buffer, const std::string &session_id)
+{
+    CURL *curl;
+    CURLcode res;
+
+    std::string cookie = "Cookie: sid=" + session_id;
+
+    struct curl_slist *headers = NULL;
+    headers = curl_slist_append(headers, "Accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, "charset: utf-8");
+    headers = curl_slist_append(headers, cookie.c_str());
+
+    curl = curl_easy_init();
+    if (!curl)
+        return -1;
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+
+    // TODO: check response code
+
+    return 0;
+}
+
 int post(const std::string &url, const std::string &payload, std::string &buffer)
 {
     CURL *curl;
@@ -147,6 +176,23 @@ std::string get_session_id(const std::string &session_token, const std::string &
     return response["id"];
 }
 
+std::string get_app_link(const std::string &session_id, const std::string &org)
+{
+    std::string url = "https://" + org + ".okta.com/api/v1/users/me/appLinks";
+    std::string buffer;
+
+    get(url, buffer, session_id);
+    json response = json::parse(buffer);
+
+    // TODO: This assumes only one, but there can be many
+    for (auto &app : response)
+        if (app["appName"] == "amazon_aws")
+            return app["linkUrl"];
+
+    // TODO: fix
+    return NULL;
+}
+
 int main(void)
 {
     std::string username = "";
@@ -171,7 +217,8 @@ int main(void)
     std::string session_id = get_session_id(session_token, org);
     std::cout << session_id << std::endl;
 
-    // TODO: get apps
+    std::string app_link = get_app_link(session_id, org);
+    std::cout << app_link << std::endl;
 
     // TODO: get saml assertion
 
