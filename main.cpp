@@ -1,4 +1,5 @@
 #include <iostream>
+#include <regex>
 #include <string>
 #include <termios.h>
 #include <unistd.h>
@@ -215,14 +216,15 @@ std::string get_saml_assertion(const std::string &app_link, const std::string &s
     std::string buffer;
 
     get(app_link, buffer, session_id);
-    // json response = json::parse(buffer);
 
-    // std::cout
-    //     << response.dump(4) << std::endl;
+    std::regex regex("<input name=\"SAMLResponse\" type=\"hidden\" value=\"(.*?)\"");
 
-    std::cout << buffer << std::endl;
+    std::smatch matches;
+    std::regex_search(buffer, matches, regex);
 
-    return "";
+    // TODO: verify successful match
+
+    return matches[1];
 }
 
 int main(void)
@@ -252,7 +254,8 @@ int main(void)
     std::string app_link = get_app_link(session_id, org);
     std::cout << app_link << std::endl;
 
-    get_saml_assertion(app_link, session_id);
+    std::string saml = get_saml_assertion(app_link, session_id);
+    std::cout << saml << std::endl;
 
     // TODO: get saml assertion
 
