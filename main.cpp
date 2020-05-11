@@ -8,6 +8,7 @@
 
 #include "base64.hpp"
 #include "unescape.hpp"
+#include "xml.hpp"
 #include "zlib.hpp"
 
 using json = nlohmann::json;
@@ -253,33 +254,19 @@ int main(void)
 
     std::string session_token = verify_mfa(factors, state_token);
 
-    std::cout << session_token << std::endl;
-
     std::string session_id = get_session_id(session_token, org);
-    std::cout << session_id << std::endl;
 
     std::string app_link = get_app_link(session_id, org);
-    std::cout << app_link << std::endl;
 
     std::string saml = get_saml_assertion(app_link, session_id);
-    std::cout << "RAW" << std::endl
-              << saml << std::endl;
 
     std::string unescaped = unescape(saml);
-    std::cout << "UNESCAPED" << std::endl
-              << unescaped << std::endl;
 
     std::string decoded = b64decode(unescaped.c_str(), unescaped.size());
-    std::cout << "B64 DECODED" << std::endl
-              << decoded << std::endl;
 
-    // std::string xml = decompress(decoded);
-    // std::cout << xml << std::endl;
-
-    // TODO: get saml assertion
-
-    // std::cout
-    //     << response.dump(4) << std::endl;
+    std::vector<std::string> roles = get_roles(decoded);
+    for (auto &role : roles)
+        std::cout << role << std::endl;
 
     return 0;
 }
