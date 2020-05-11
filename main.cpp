@@ -217,9 +217,9 @@ std::string get_saml_assertion(const std::string &app_link, const std::string &s
     std::regex regex("<input name=\"SAMLResponse\" type=\"hidden\" value=\"(.*?)\"");
 
     std::smatch matches;
-    std::regex_search(buffer, matches, regex);
-
-    // TODO: verify successful match
+    int res = std::regex_search(buffer, matches, regex);
+    if (!res)
+        throw(std::runtime_error("SAMLResponse match failed"));
 
     return matches[1];
 }
