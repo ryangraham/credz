@@ -157,13 +157,10 @@ std::string verify_push(const json &factor, const std::string &state_token)
     std::string url = factor["_links"]["verify"]["href"];
     std::string buffer;
 
-    std::cout << url << std::endl;
-    std::cout << payload << std::endl;
-
     post(url, payload, buffer);
+    std::cout << "Okta Push initiated. Waiting for response..." << std::endl;
 
     json response = json::parse(buffer);
-    std::cout << response["status"] << std::endl;
 
     std::string next_url = response["_links"]["next"]["href"];
 
