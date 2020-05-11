@@ -173,8 +173,7 @@ std::string verify_mfa(const json &factors, const std::string &state_token)
         if (factor["factorType"] == "push")
             return verify_push(factor, state_token);
 
-    // TODO: fix
-    return NULL;
+    throw(std::runtime_error("No supported factors"));
 }
 
 std::string get_session_id(const std::string &session_token, const std::string &org)
@@ -204,8 +203,7 @@ std::string get_app_link(const std::string &session_id, const std::string &org)
         if (app["appName"] == "amazon_aws")
             return app["linkUrl"];
 
-    // TODO: fix
-    return NULL;
+    throw(std::runtime_error("No AWS apps configured in Okta"));
 }
 
 std::string get_saml_assertion(const std::string &app_link, const std::string &session_id)
