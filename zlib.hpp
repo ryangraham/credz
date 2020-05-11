@@ -2,6 +2,7 @@
 #include <sstream>
 #include <zlib.h>
 
+// Note: unused now D:
 std::string decompress(const std::string &compressed)
 {
     z_stream zs;
