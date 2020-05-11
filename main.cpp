@@ -250,7 +250,7 @@ int main(void)
 
     std::string unescaped = unescape(saml);
 
-    std::string decoded = b64decode(unescaped.c_str(), unescaped.size());
+    std::string decoded = base64::decode(unescaped);
 
     std::vector<std::vector<std::string>> roles = get_roles(decoded);
     for (auto &role : roles)

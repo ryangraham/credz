@@ -1,5 +1,8 @@
 #include <string>
 
+namespace base64
+{
+
 static const int B64index[256] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 63, 62, 62, 63, 52, 53, 54, 55,
@@ -8,9 +11,10 @@ static const int B64index[256] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                   0, 0, 0, 63, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
                                   41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51};
 
-std::string b64decode(const void *data, const size_t len)
+inline std::string decode(const std::string &data)
 {
-    unsigned char *p = (unsigned char *)data;
+    int len = data.size();
+    unsigned char *p = (unsigned char *)data.c_str();
     int pad = len > 0 && (len % 4 || p[len - 1] == '=');
     const size_t L = ((len + 3) / 4 - pad) * 4;
     std::string str(L / 4 * 3 + pad, '\0');
@@ -35,3 +39,5 @@ std::string b64decode(const void *data, const size_t len)
     }
     return str;
 }
+
+} // namespace base64
