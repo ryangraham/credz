@@ -140,7 +140,11 @@ std::string wait_for_push(const std::string &next_url, const std::string &payloa
     if (response["status"] == "SUCCESS")
         return response["sessionToken"];
 
-    // TODO: handle timeout and rejection in factorStatus
+    if (response["factorStatus"] == "TIMEOUT")
+        throw(std::runtime_error("MFA response timed out"));
+
+    if (response["factorStatus"] == "REJECTED")
+        throw(std::runtime_error("MFA push rejected"));
 
     return wait_for_push(next_url, payload);
 }
