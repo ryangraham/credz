@@ -23,6 +23,7 @@ int get(const std::string &url, std::string &buffer, const std::string &session_
 {
     CURL *curl;
     CURLcode res;
+    int ret = 0;
 
     std::string cookie = "Cookie: sid=" + session_id;
 
@@ -41,26 +42,22 @@ int get(const std::string &url, std::string &buffer, const std::string &session_
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
     res = curl_easy_perform(curl);
 
-    if (res == CURLE_OK)
-    {
-        long response_code;
-        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-        std::cout << response_code << std::endl;
-    }
+    if (res == CURLE_HTTP_RETURNED_ERROR)
+        ret = -1;
 
     curl_easy_cleanup(curl);
 
-    // TODO: check response code
-
-    return 0;
+    return ret;
 }
 
 int post(const std::string &url, const std::string &payload, std::string &buffer)
 {
     CURL *curl;
     CURLcode res;
+    int ret = 0;
 
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Accept: application/json");
@@ -76,20 +73,15 @@ int post(const std::string &url, const std::string &payload, std::string &buffer
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
     res = curl_easy_perform(curl);
 
-    if (res == CURLE_OK)
-    {
-        long response_code;
-        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-        std::cout << response_code << std::endl;
-    }
+    if (res == CURLE_HTTP_RETURNED_ERROR)
+        ret = -1;
 
     curl_easy_cleanup(curl);
 
-    // TODO: check response code
-
-    return 0;
+    return ret;
 }
 
 json okta_auth(const std::string &username, const std::string &password, const std::string &org)
@@ -101,34 +93,27 @@ json okta_auth(const std::string &username, const std::string &password, const s
     std::string url = "https://" + org + ".okta.com/api/v1/authn";
     std::string buffer;
 
-    post(url, payload, buffer);
+    int res = post(url, payload, buffer);
+    if (res != 0)
+        throw(std::runtime_error("Okta authentication failed"));
 
-    json response = json::parse(buffer);
-
-    std::cout << response["status"] << std::endl;
-    // TODO: Check status
-
-    return response;
+    return json::parse(buffer);
 }
 
 int password_prompt(std::string &password)
 {
     struct termios tty;
 
-    // Get current terminal settings
     if (tcgetattr(STDIN_FILENO, &tty) != 0)
         return -1;
 
-    // Unset ECHO flag
     tty.c_lflag &= ~ECHO;
     if (tcsetattr(STDIN_FILENO, TCSANOW, &tty) != 0)
         return -1;
 
-    // Prompt for password
     std::cout << "Password: ";
     std::cin >> password;
 
-    // Set ECHO flag
     tty.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 
@@ -253,9 +238,7 @@ int main(void)
     std::cout << std::endl;
 
     json response = okta_auth(username, password, org);
-
     std::string state_token = response["stateToken"];
-
     json factors = response["_embedded"]["factors"];
 
     std::string session_token = verify_mfa(factors, state_token);
