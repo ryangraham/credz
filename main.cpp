@@ -241,7 +241,7 @@ std::string get_saml_assertion(const std::string &app_link, const std::string &s
 int main(void)
 {
 
-    // TODO curl global init
+    curl_global_init(CURL_GLOBAL_ALL);
 
     std::string org = "";
     std::string username = "";
@@ -275,5 +275,6 @@ int main(void)
         for (auto &arn : role)
             std::cout << arn << std::endl;
 
+    curl_global_cleanup();
     return 0;
 }
