@@ -6,6 +6,10 @@
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
+#include "base64.hpp"
+#include "unescape.hpp"
+#include "zlib.hpp"
+
 using json = nlohmann::json;
 
 static size_t write_callback(void *buffer, size_t size, size_t count, void *string)
@@ -229,6 +233,9 @@ std::string get_saml_assertion(const std::string &app_link, const std::string &s
 
 int main(void)
 {
+
+    // TODO curl global init
+
     std::string username = "";
     std::string password = "";
 
@@ -255,7 +262,19 @@ int main(void)
     std::cout << app_link << std::endl;
 
     std::string saml = get_saml_assertion(app_link, session_id);
-    std::cout << saml << std::endl;
+    std::cout << "RAW" << std::endl
+              << saml << std::endl;
+
+    std::string unescaped = unescape(saml);
+    std::cout << "UNESCAPED" << std::endl
+              << unescaped << std::endl;
+
+    std::string decoded = b64decode(unescaped.c_str(), unescaped.size());
+    std::cout << "B64 DECODED" << std::endl
+              << decoded << std::endl;
+
+    // std::string xml = decompress(decoded);
+    // std::cout << xml << std::endl;
 
     // TODO: get saml assertion
 
