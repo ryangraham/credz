@@ -3,86 +3,15 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
-#include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
 #include "base64.hpp"
+#include "curl.hpp"
 #include "unescape.hpp"
 #include "xml.hpp"
 #include "zlib.hpp"
 
 using json = nlohmann::json;
-
-static size_t write_callback(void *buffer, size_t size, size_t count, void *string)
-{
-    ((std::string *)string)->append((char *)buffer, size * count);
-    return size * count;
-}
-
-int get(const std::string &url, std::string &buffer, const std::string &session_id)
-{
-    CURL *curl;
-    CURLcode res;
-    int ret = 0;
-
-    std::string cookie = "Cookie: sid=" + session_id;
-
-    struct curl_slist *headers = NULL;
-    headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "charset: utf-8");
-    headers = curl_slist_append(headers, cookie.c_str());
-
-    curl = curl_easy_init();
-    if (!curl)
-        return -1;
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-    res = curl_easy_perform(curl);
-
-    if (res == CURLE_HTTP_RETURNED_ERROR)
-        ret = -1;
-
-    curl_easy_cleanup(curl);
-
-    return ret;
-}
-
-int post(const std::string &url, const std::string &payload, std::string &buffer)
-{
-    CURL *curl;
-    CURLcode res;
-    int ret = 0;
-
-    struct curl_slist *headers = NULL;
-    headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "charset: utf-8");
-
-    curl = curl_easy_init();
-    if (!curl)
-        return -1;
-
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-    res = curl_easy_perform(curl);
-
-    if (res == CURLE_HTTP_RETURNED_ERROR)
-        ret = -1;
-
-    curl_easy_cleanup(curl);
-
-    return ret;
-}
 
 json okta_auth(const std::string &username, const std::string &password, const std::string &org)
 {
@@ -93,7 +22,7 @@ json okta_auth(const std::string &username, const std::string &password, const s
     std::string url = "https://" + org + ".okta.com/api/v1/authn";
     std::string buffer;
 
-    int res = post(url, payload, buffer);
+    int res = curl::post(url, payload, buffer);
     if (res != 0)
         throw(std::runtime_error("Okta authentication failed"));
 
@@ -135,7 +64,7 @@ void org_prompt(std::string &org)
 std::string wait_for_push(const std::string &next_url, const std::string &payload)
 {
     std::string buffer;
-    post(next_url, payload, buffer);
+    curl::post(next_url, payload, buffer);
     json response = json::parse(buffer);
     if (response["status"] == "SUCCESS")
         return response["sessionToken"];
@@ -157,7 +86,7 @@ std::string verify_push(const json &factor, const std::string &state_token)
     std::string url = factor["_links"]["verify"]["href"];
     std::string buffer;
 
-    post(url, payload, buffer);
+    curl::post(url, payload, buffer);
     std::cout << "Okta Push initiated. Waiting for response..." << std::endl;
 
     json response = json::parse(buffer);
@@ -184,7 +113,7 @@ std::string get_session_id(const std::string &session_token, const std::string &
     std::string url = "https://" + org + ".okta.com/api/v1/sessions";
     std::string buffer;
 
-    post(url, payload, buffer);
+    curl::post(url, payload, buffer);
     json response = json::parse(buffer);
 
     return response["id"];
@@ -195,7 +124,7 @@ std::string get_app_link(const std::string &session_id, const std::string &org)
     std::string url = "https://" + org + ".okta.com/api/v1/users/me/appLinks";
     std::string buffer;
 
-    get(url, buffer, session_id);
+    curl::get(url, buffer, session_id);
     json response = json::parse(buffer);
 
     // TODO: This assumes only one, but there can be many
@@ -210,7 +139,7 @@ std::string get_saml_assertion(const std::string &app_link, const std::string &s
 {
     std::string buffer;
 
-    get(app_link, buffer, session_id);
+    curl::get(app_link, buffer, session_id);
 
     std::regex regex("<input name=\"SAMLResponse\" type=\"hidden\" value=\"(.*?)\"");
 
