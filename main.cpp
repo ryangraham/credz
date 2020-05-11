@@ -264,9 +264,10 @@ int main(void)
 
     std::string decoded = b64decode(unescaped.c_str(), unescaped.size());
 
-    std::vector<std::string> roles = get_roles(decoded);
+    std::vector<std::vector<std::string>> roles = get_roles(decoded);
     for (auto &role : roles)
-        std::cout << role << std::endl;
+        for (auto &arn : role)
+            std::cout << arn << std::endl;
 
     return 0;
 }
