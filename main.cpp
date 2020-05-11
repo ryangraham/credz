@@ -141,6 +141,12 @@ void username_prompt(std::string &username)
     std::cin >> username;
 }
 
+void org_prompt(std::string &org)
+{
+    std::cout << "Okta Org: ";
+    std::cin >> org;
+}
+
 std::string wait_for_push(const std::string &next_url, const std::string &payload)
 {
     std::string buffer;
@@ -237,15 +243,15 @@ int main(void)
 
     // TODO curl global init
 
+    std::string org = "";
     std::string username = "";
     std::string password = "";
 
+    org_prompt(org);
     username_prompt(username);
     password_prompt(password);
     std::cout << std::endl;
 
-    // TODO: Prompt for org
-    std::string org = "blvd";
     json response = okta_auth(username, password, org);
 
     std::string state_token = response["stateToken"];
