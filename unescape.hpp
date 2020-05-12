@@ -1,25 +1,6 @@
 #include <string>
 #include <iostream>
 #include <boost/regex.hpp>
-#include <curl/curl.h>
-
-/*
- * URL decode a string
- * 
- * Example: "%3D" becomes "="
- * 
- * Note: unused for now
- */
-std::string url_decode(const std::string &encoded)
-{
-    CURL *curl = curl_easy_init();
-    int output_len;
-    char *curl_result = curl_easy_unescape(curl, encoded.c_str(), encoded.length(), &output_len);
-    std::string res(curl_result, curl_result + output_len);
-    curl_free(curl_result);
-    curl_easy_cleanup(curl);
-    return res;
-}
 
 /*
  * Unescape HTML entities
