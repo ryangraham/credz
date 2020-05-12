@@ -5,11 +5,14 @@
 #include <unistd.h>
 #include <nlohmann/json.hpp>
 
+#include <aws/core/Aws.h>
+#include <aws/sts/STSClient.h>
+#include <aws/sts/model/AssumeRoleWithSAMLRequest.h>
+
 #include "base64.hpp"
 #include "okta.hpp"
 #include "unescape.hpp"
 #include "xml.hpp"
-#include "zlib.hpp"
 
 using json = nlohmann::json;
 
@@ -79,6 +82,41 @@ int main(void)
     for (auto &role : roles)
         for (auto &arn : role)
             std::cout << arn << std::endl;
+
+    std::string principal_arn = roles[0][0];
+    std::string role_arn = roles[0][1];
+
+    Aws::SDKOptions options;
+    Aws::InitAPI(options);
+    {
+        Aws::String aws_principal_arn(principal_arn.c_str(), principal_arn.size());
+        Aws::String aws_role_arn(role_arn.c_str(), role_arn.size());
+        Aws::String aws_saml(unescaped.c_str(), unescaped.size());
+
+        Aws::STS::Model::AssumeRoleWithSAMLRequest request;
+        request.SetPrincipalArn(aws_principal_arn);
+        request.SetRoleArn(aws_role_arn);
+        request.SetSAMLAssertion(aws_saml);
+
+        Aws::STS::STSClient sts_client;
+        auto result = sts_client.AssumeRoleWithSAML(request);
+        if (!result.IsSuccess())
+        {
+            std::cout
+                << result.GetError().GetMessage().c_str() << std::endl;
+            return -1;
+        }
+
+        auto credentials = result.GetResult().GetCredentials();
+        std::string aws_access_key_id = credentials.GetAccessKeyId().c_str();
+        std::string aws_secret_access_key = credentials.GetSecretAccessKey().c_str();
+        std::string aws_session_token = credentials.GetSessionToken().c_str();
+
+        std::cout << "aws_access_key_id: " << aws_access_key_id << std::endl;
+        std::cout << "aws_secret_access_key: " << aws_secret_access_key << std::endl;
+        std::cout << "aws_session_token: " << aws_session_token << std::endl;
+    }
+    Aws::ShutdownAPI(options);
 
     curl_global_cleanup();
     return 0;
