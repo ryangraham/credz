@@ -17,22 +17,42 @@
 using json = nlohmann::json;
 namespace po = boost::program_options;
 
-int password_prompt(std::string &password)
+void disable_echo()
 {
     struct termios tty;
 
     if (tcgetattr(STDIN_FILENO, &tty) != 0)
-        return -1;
+        throw(std::runtime_error("Failed to fetch TTY"));
 
     tty.c_lflag &= ~ECHO;
+
     if (tcsetattr(STDIN_FILENO, TCSANOW, &tty) != 0)
-        return -1;
+        throw(std::runtime_error("Failed to disable echo"));
+}
+
+void enable_echo()
+{
+    struct termios tty;
+
+    if (tcgetattr(STDIN_FILENO, &tty) != 0)
+        throw(std::runtime_error("Failed to fetch TTY"));
+
+    tty.c_lflag |= ECHO;
+
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &tty) != 0)
+        throw(std::runtime_error("Failed to enable echo"));
+}
+
+int password_prompt(std::string &password)
+{
+    disable_echo();
 
     std::cout << "Password: ";
     std::cin >> password;
 
-    tty.c_lflag |= ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+    enable_echo();
+
+    std::cout << std::endl;
 
     return 0;
 }
@@ -47,6 +67,34 @@ void org_prompt(std::string &org)
 {
     std::cout << "Okta Org: ";
     std::cin >> org;
+}
+
+assumable_role select_role(std::vector<assumable_role> roles)
+{
+    std::cout << std::endl;
+
+    int menu_count = 1;
+    for (auto &role : roles)
+    {
+        std::cout << menu_count << ". " << role.role_arn << std::endl;
+        menu_count++;
+    }
+    std::cout << std::endl
+              << "Enter a number to select a role: ";
+
+    int number;
+    std::cin >> number;
+
+    if (number > roles.size())
+        throw(std::runtime_error("Selection out of range"));
+
+    assumable_role role = roles[number - 1];
+
+    std::cout << std::endl
+              << "You selected " << number << " - " << role.role_arn << std::endl
+              << std::endl;
+
+    return role;
 }
 
 int main(int argc, char *argv[])
@@ -98,7 +146,6 @@ int main(int argc, char *argv[])
         username_prompt(username);
 
     password_prompt(password);
-    std::cout << std::endl;
 
     json response = okta::auth(username, password, org);
     std::string state_token = response["stateToken"];
@@ -112,20 +159,15 @@ int main(int argc, char *argv[])
 
     std::string saml = okta::get_saml_assertion(app_link, session_id);
 
-    std::string unescaped = unescape(saml);
+    std::string unescaped_saml = unescape(saml);
 
-    std::string decoded = base64::decode(unescaped);
+    std::string decoded_saml = base64::decode(unescaped_saml);
 
-    std::vector<assumable_role> roles = get_roles(decoded);
-    // for (auto &role : roles)
-    // {
-    //     std::cout << role.principal_arn << std::endl;
-    //     std::cout << role.role_arn << std::endl;
-    // }
+    std::vector<assumable_role> roles = get_roles(decoded_saml);
 
-    assumable_role role = roles[0];
+    assumable_role role = select_role(roles);
 
-    aws::get_creds(unescaped, role.principal_arn, role.role_arn);
+    aws::get_creds(unescaped_saml, role.principal_arn, role.role_arn);
 
     curl_global_cleanup();
     return 0;
