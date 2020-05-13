@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <regex>
 #include <string>
@@ -9,6 +10,7 @@
 #include "aws.hpp"
 #include "base64.hpp"
 #include "okta.hpp"
+#include "path.hpp"
 #include "unescape.hpp"
 #include "xml.hpp"
 
@@ -52,8 +54,17 @@ int main(int argc, char *argv[])
 
     curl_global_init(CURL_GLOBAL_ALL);
 
+    std::string config_file;
     po::options_description desc("Allowed options");
-    desc.add_options()("version,v", "print version string")("help", "produce help message");
+    desc.add_options()("version,v", "print version string")("help", "produce help message")("config,c", po::value<std::string>(&config_file)->default_value("~/.aws-credz"),
+                                                                                            "Path to config file");
+
+    std::string org = "";
+    std::string username = "";
+    std::string password = "";
+    po::options_description config("Configuration");
+    config.add_options()("Settings.organization", po::value<std::string>(&org),
+                         "Okta organization")("Settings.username", po::value<std::string>(&username));
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -72,12 +83,20 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    std::string org = "";
-    std::string username = "";
-    std::string password = "";
+    path::expand(config_file);
+    std::ifstream file(config_file, std::ios::in);
+    if (file)
+    {
+        store(parse_config_file(file, config), vm);
+        notify(vm);
+    }
 
-    org_prompt(org);
-    username_prompt(username);
+    if (!vm.count("Settings.organization"))
+        org_prompt(org);
+
+    if (!vm.count("Settings.username"))
+        username_prompt(username);
+
     password_prompt(password);
     std::cout << std::endl;
 
