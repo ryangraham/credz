@@ -116,15 +116,16 @@ int main(int argc, char *argv[])
 
     std::string decoded = base64::decode(unescaped);
 
-    std::vector<std::vector<std::string>> roles = get_roles(decoded);
-    for (auto &role : roles)
-        for (auto &arn : role)
-            std::cout << arn << std::endl;
+    std::vector<assumable_role> roles = get_roles(decoded);
+    // for (auto &role : roles)
+    // {
+    //     std::cout << role.principal_arn << std::endl;
+    //     std::cout << role.role_arn << std::endl;
+    // }
 
-    std::string principal_arn = roles[0][0];
-    std::string role_arn = roles[0][1];
+    assumable_role role = roles[0];
 
-    aws::get_creds(unescaped, principal_arn, role_arn);
+    aws::get_creds(unescaped, role.principal_arn, role.role_arn);
 
     curl_global_cleanup();
     return 0;
