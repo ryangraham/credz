@@ -12,14 +12,10 @@ void get_creds(const std::string &assertion, const std::string &principal_arn, c
     Aws::SDKOptions options;
     Aws::InitAPI(options);
     {
-        Aws::String aws_principal_arn(principal_arn.c_str(), principal_arn.size());
-        Aws::String aws_role_arn(role_arn.c_str(), role_arn.size());
-        Aws::String aws_saml(assertion.c_str(), assertion.size());
-
         Aws::STS::Model::AssumeRoleWithSAMLRequest request;
-        request.SetPrincipalArn(aws_principal_arn);
-        request.SetRoleArn(aws_role_arn);
-        request.SetSAMLAssertion(aws_saml);
+        request.SetPrincipalArn(principal_arn.c_str());
+        request.SetRoleArn(role_arn.c_str());
+        request.SetSAMLAssertion(assertion.c_str());
 
         Aws::STS::STSClient sts_client;
         auto result = sts_client.AssumeRoleWithSAML(request);
