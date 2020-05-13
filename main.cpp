@@ -3,6 +3,7 @@
 #include <string>
 #include <termios.h>
 #include <unistd.h>
+#include <boost/program_options.hpp>
 #include <nlohmann/json.hpp>
 
 #include "aws.hpp"
@@ -12,6 +13,7 @@
 #include "xml.hpp"
 
 using json = nlohmann::json;
+namespace po = boost::program_options;
 
 int password_prompt(std::string &password)
 {
@@ -45,10 +47,30 @@ void org_prompt(std::string &org)
     std::cin >> org;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 
     curl_global_init(CURL_GLOBAL_ALL);
+
+    po::options_description desc("Allowed options");
+    desc.add_options()("version,v", "print version string")("help", "produce help message");
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
+    {
+        std::cout << desc << std::endl;
+        return 1;
+    }
+
+    if (vm.count("version"))
+    {
+        // TODO: make this a real version after moving to cmake
+        std::cout << "0.0.1" << std::endl;
+        return 0;
+    }
 
     std::string org = "";
     std::string username = "";
