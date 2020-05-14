@@ -13,6 +13,7 @@
 #include "okta.h"
 #include "path.h"
 #include "unescape.h"
+#include "version.h"
 #include "xml.h"
 
 using json = nlohmann::json;
@@ -150,8 +151,7 @@ int main(int argc, char *argv[]) {
   }
 
   if (vm.count("version") != 0u) {
-    // TODO(RG): make this a real version after moving to cmake
-    std::cout << "0.0.1" << std::endl;
+    std::cout << VERSION << std::endl;
     return 0;
   }
 
