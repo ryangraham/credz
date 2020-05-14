@@ -6,7 +6,7 @@
 #include <regex>
 #include <string>
 
-#include "curl.hpp"
+#include "curl.h"
 
 namespace okta {
 

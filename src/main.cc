@@ -8,12 +8,12 @@
 #include <regex>
 #include <string>
 
-#include "aws.hpp"
-#include "base64.hpp"
-#include "okta.hpp"
-#include "path.hpp"
-#include "unescape.hpp"
-#include "xml.hpp"
+#include "aws.h"
+#include "base64.h"
+#include "okta.h"
+#include "path.h"
+#include "unescape.h"
+#include "xml.h"
 
 using json = nlohmann::json;
 namespace po = boost::program_options;

@@ -13,6 +13,6 @@ include_directories(${CURL_INCLUDE_DIRS})
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 find_package(AWSSDK REQUIRED COMPONENTS sts)
 
-add_executable(credz src/main.cpp)
+add_executable(credz src/main.cc)
 
 TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES})
