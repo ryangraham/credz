@@ -19,11 +19,12 @@ using json = nlohmann::json;
 namespace po = boost::program_options;
 
 void disable_echo() {
-  struct termios tty;
+  struct termios tty = {};
 
   if (tcgetattr(STDIN_FILENO, &tty) != 0)
     throw(std::runtime_error("Failed to fetch TTY"));
 
+  // NOLINTNEXTLINE
   tty.c_lflag &= ~ECHO;
 
   if (tcsetattr(STDIN_FILENO, TCSANOW, &tty) != 0)
@@ -31,11 +32,12 @@ void disable_echo() {
 }
 
 void enable_echo() {
-  struct termios tty;
+  struct termios tty = {};
 
   if (tcgetattr(STDIN_FILENO, &tty) != 0)
     throw(std::runtime_error("Failed to fetch TTY"));
 
+  // NOLINTNEXTLINE
   tty.c_lflag |= ECHO;
 
   if (tcsetattr(STDIN_FILENO, TCSANOW, &tty) != 0)
@@ -91,6 +93,7 @@ assumable_role select_role(std::vector<assumable_role> roles) {
 }
 
 int main(int argc, char *argv[]) {
+  // NOLINTNEXTLINE
   curl_global_init(CURL_GLOBAL_ALL);
 
   std::string config_file;
@@ -101,9 +104,9 @@ int main(int argc, char *argv[]) {
       po::value<std::string>(&config_file)->default_value("~/.credz"),
       "Path to config file");
 
-  std::string org = "";
-  std::string username = "";
-  std::string password = "";
+  std::string org;
+  std::string username;
+  std::string password;
   po::options_description config("Configuration");
   config.add_options()("Settings.organization", po::value<std::string>(&org),
                        "Okta organization")("Settings.username",
@@ -113,13 +116,13 @@ int main(int argc, char *argv[]) {
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
 
-  if (vm.count("help")) {
+  if (vm.count("help") != 0u) {
     std::cout << desc << std::endl;
     return 1;
   }
 
-  if (vm.count("version")) {
-    // TODO: make this a real version after moving to cmake
+  if (vm.count("version") != 0u) {
+    // TODO(RG): make this a real version after moving to cmake
     std::cout << "0.0.1" << std::endl;
     return 0;
   }
@@ -131,9 +134,9 @@ int main(int argc, char *argv[]) {
     notify(vm);
   }
 
-  if (!vm.count("Settings.organization")) org_prompt(org);
+  if (vm.count("Settings.organization") == 0u) org_prompt(org);
 
-  if (!vm.count("Settings.username")) username_prompt(username);
+  if (vm.count("Settings.username") == 0u) username_prompt(username);
 
   password_prompt(password);
 
