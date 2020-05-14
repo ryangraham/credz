@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
   desc.add_options()("version,v",
                      "print version string")("help", "produce help message")(
       "config,c",
-      po::value<std::string>(&config_file)->default_value("~/.aws-credz"),
+      po::value<std::string>(&config_file)->default_value("~/.credz"),
       "Path to config file");
 
   std::string org = "";
