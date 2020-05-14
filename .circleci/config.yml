@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install boost
+          command: sudo apt update && sudo apt install -y libboost-all-dev
+      - run:
           name: Build
           command: make build
       - run:
