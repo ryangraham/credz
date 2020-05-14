@@ -12,8 +12,8 @@ namespace okta {
 
 using json = nlohmann::json;
 
-json auth(const std::string &username, const std::string &password,
-          const std::string &org) {
+inline json auth(const std::string &username, const std::string &password,
+                 const std::string &org) {
   json auth;
   auth["username"] = username;
   auth["password"] = password;
@@ -27,8 +27,8 @@ json auth(const std::string &username, const std::string &password,
   return json::parse(buffer);
 }
 
-std::string wait_for_push(const std::string &next_url,
-                          const std::string &payload) {
+inline std::string wait_for_push(const std::string &next_url,
+                                 const std::string &payload) {
   std::string buffer;
   curl::post(next_url, payload, buffer);
   json response = json::parse(buffer);
@@ -43,7 +43,8 @@ std::string wait_for_push(const std::string &next_url,
   return wait_for_push(next_url, payload);
 }
 
-std::string verify_push(const json &factor, const std::string &state_token) {
+inline std::string verify_push(const json &factor,
+                               const std::string &state_token) {
   json body;
   body["stateToken"] = state_token;
   std::string payload = body.dump();
@@ -60,15 +61,16 @@ std::string verify_push(const json &factor, const std::string &state_token) {
   return wait_for_push(next_url, payload);
 }
 
-std::string verify_mfa(const json &factors, const std::string &state_token) {
+inline std::string verify_mfa(const json &factors,
+                              const std::string &state_token) {
   for (auto &factor : factors)
     if (factor["factorType"] == "push") return verify_push(factor, state_token);
 
   throw(std::runtime_error("No supported factors"));
 }
 
-std::string get_session_id(const std::string &session_token,
-                           const std::string &org) {
+inline std::string get_session_id(const std::string &session_token,
+                                  const std::string &org) {
   json body;
   body["sessionToken"] = session_token;
   std::string payload = body.dump();
@@ -81,8 +83,8 @@ std::string get_session_id(const std::string &session_token,
   return response["id"];
 }
 
-std::string get_app_link(const std::string &session_id,
-                         const std::string &org) {
+inline std::string get_app_link(const std::string &session_id,
+                                const std::string &org) {
   std::string url = "https://" + org + ".okta.com/api/v1/users/me/appLinks";
   std::string buffer;
 
@@ -96,8 +98,8 @@ std::string get_app_link(const std::string &session_id,
   throw(std::runtime_error("No AWS apps configured in Okta"));
 }
 
-std::string get_saml_assertion(const std::string &app_link,
-                               const std::string &session_id) {
+inline std::string get_saml_assertion(const std::string &app_link,
+                                      const std::string &session_id) {
   std::string buffer;
 
   curl::get(app_link, buffer, session_id);

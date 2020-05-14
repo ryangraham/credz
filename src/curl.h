@@ -10,8 +10,8 @@ static size_t write_callback(void *buffer, size_t size, size_t count,
   return size * count;
 }
 
-int get(const std::string &url, std::string &buffer,
-        const std::string &session_id) {
+inline int get(const std::string &url, std::string &buffer,
+               const std::string &session_id) {
   CURL *curl;
   CURLcode res;
   int ret = 0;
@@ -42,8 +42,8 @@ int get(const std::string &url, std::string &buffer,
   return ret;
 }
 
-int post(const std::string &url, const std::string &payload,
-         std::string &buffer) {
+inline int post(const std::string &url, const std::string &payload,
+                std::string &buffer) {
   CURL *curl;
   CURLcode res;
   int ret = 0;

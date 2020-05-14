@@ -13,13 +13,13 @@ struct assumable_role {
   std::string principal_arn;
 };
 
-std::vector<std::string> split(const std::string &role) {
+inline std::vector<std::string> split(const std::string &role) {
   std::vector<std::string> results;
   boost::split(results, role, [](char c) { return c == ','; });
   return results;
 }
 
-std::vector<assumable_role> get_roles(const std::string &assertion) {
+inline std::vector<assumable_role> get_roles(const std::string &assertion) {
   std::vector<assumable_role> output;
   boost::property_tree::ptree tree;
   std::istringstream input(assertion);

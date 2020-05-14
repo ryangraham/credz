@@ -7,8 +7,9 @@
 
 namespace aws {
 
-void get_creds(const std::string &assertion, const std::string &principal_arn,
-               const std::string &role_arn) {
+inline void get_creds(const std::string &assertion,
+                      const std::string &principal_arn,
+                      const std::string &role_arn) {
   Aws::SDKOptions options;
   Aws::InitAPI(options);
   {

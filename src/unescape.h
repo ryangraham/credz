@@ -9,7 +9,7 @@
  *
  * https://en.wikipedia.org/wiki/Numeric_character_reference
  */
-std::string unescape(const std::string &input) {
+inline std::string unescape(const std::string &input) {
   std::string output;
   boost::regex re("&#x([a-zA-Z0-9][a-zA-Z0-9]);");
   const int subs[] = {-1, 1};
