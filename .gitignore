@@ -2,3 +2,4 @@ a.out
 .vscode/
 *.json
 *.xml
+build/*
