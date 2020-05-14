@@ -63,7 +63,7 @@ inline std::string verify_push(const json &factor,
 
 inline std::string verify_mfa(const json &factors,
                               const std::string &state_token) {
-  for (auto &factor : factors)
+  for (const auto &factor : factors)
     if (factor["factorType"] == "push") return verify_push(factor, state_token);
 
   throw(std::runtime_error("No supported factors"));
@@ -91,7 +91,7 @@ inline std::string get_app_link(const std::string &session_id,
   curl::get(url, buffer, session_id);
   json response = json::parse(buffer);
 
-  // TODO: This assumes only one, but there can be many
+  // TODO(RG): This assumes only one, but there can be many
   for (auto &app : response)
     if (app["appName"] == "amazon_aws") return app["linkUrl"];
 
@@ -108,7 +108,7 @@ inline std::string get_saml_assertion(const std::string &app_link,
       "<input name=\"SAMLResponse\" type=\"hidden\" value=\"(.*?)\"");
 
   std::smatch matches;
-  int res = std::regex_search(buffer, matches, regex);
+  bool res = std::regex_search(buffer, matches, regex);
   if (!res) throw(std::runtime_error("SAMLResponse match failed"));
 
   return matches[1];
