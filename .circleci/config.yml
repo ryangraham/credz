@@ -8,10 +8,10 @@ jobs:
       - checkout
       - run:
           name: Install build tools
-          command: 'apt update && apt-get update && sudo apt install -y build-essential cmake g++'
+          command: sudo apt update && apt-get update && sudo apt install -y build-essential cmake g++
       - run:
           name: Build
-          command: 'make bild'
+          command: make build
       - run:
           name: Run
-          command: './build/credz --version'
+          command: ./build/credz --version
