@@ -5,8 +5,9 @@
 namespace curl {
 
 static size_t write_callback(void *buffer, size_t size, size_t count,
-                             void *string) {
-  ((std::string *)string)->append((char *)buffer, size * count);
+                             void *output) {
+  static_cast<std::string *>(output)->append(static_cast<char *>(buffer),
+                                             size * count);
   return size * count;
 }
 
@@ -18,14 +19,14 @@ inline int get(const std::string &url, std::string &buffer,
 
   std::string cookie = "Cookie: sid=" + session_id;
 
-  struct curl_slist *headers = NULL;
+  struct curl_slist *headers = nullptr;
   headers = curl_slist_append(headers, "Accept: application/json");
   headers = curl_slist_append(headers, "Content-Type: application/json");
   headers = curl_slist_append(headers, "charset: utf-8");
   headers = curl_slist_append(headers, cookie.c_str());
 
   curl = curl_easy_init();
-  if (!curl) return -1;
+  if (curl == nullptr) return -1;
 
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
@@ -48,13 +49,13 @@ inline int post(const std::string &url, const std::string &payload,
   CURLcode res;
   int ret = 0;
 
-  struct curl_slist *headers = NULL;
+  struct curl_slist *headers = nullptr;
   headers = curl_slist_append(headers, "Accept: application/json");
   headers = curl_slist_append(headers, "Content-Type: application/json");
   headers = curl_slist_append(headers, "charset: utf-8");
 
   curl = curl_easy_init();
-  if (!curl) return -1;
+  if (curl == nullptr) return -1;
 
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
