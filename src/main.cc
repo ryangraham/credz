@@ -67,7 +67,7 @@ void org_prompt(std::string &org) {
   std::cin >> org;
 }
 
-assumable_role select_role(std::vector<assumable_role> roles) {
+xml::role select_role(std::vector<xml::role> roles) {
   if (roles.size() == 1) return roles[0];
 
   std::cout << std::endl;
@@ -85,7 +85,7 @@ assumable_role select_role(std::vector<assumable_role> roles) {
   if (number > roles.size())
     throw(std::runtime_error("Selection out of range"));
 
-  assumable_role role = roles[number - 1];
+  xml::role role = roles[number - 1];
 
   std::cout << std::endl
             << "You selected " << number << " - " << role.role_arn << std::endl
@@ -185,8 +185,8 @@ int main(int argc, char *argv[]) {
 
   std::string decoded_saml = base64::decode(unescaped_saml);
 
-  std::vector<assumable_role> roles = get_roles(decoded_saml);
-  assumable_role role = select_role(roles);
+  std::vector<xml::role> roles = xml::get_roles(decoded_saml);
+  xml::role role = select_role(roles);
 
   aws::get_creds(unescaped_saml, role.principal_arn, role.role_arn);
 

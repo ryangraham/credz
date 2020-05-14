@@ -8,7 +8,9 @@
 
 #define ROLE_ATTRIBUTE_NAME "https://aws.amazon.com/SAML/Attributes/Role"
 
-struct assumable_role {
+namespace xml {
+
+struct role {
   std::string role_arn;
   std::string principal_arn;
 };
@@ -19,8 +21,8 @@ inline std::vector<std::string> split(const std::string &role) {
   return results;
 }
 
-inline std::vector<assumable_role> get_roles(const std::string &assertion) {
-  std::vector<assumable_role> output;
+inline std::vector<role> get_roles(const std::string &assertion) {
+  std::vector<role> output;
   boost::property_tree::ptree tree;
   std::istringstream input(assertion);
 
@@ -32,10 +34,12 @@ inline std::vector<assumable_role> get_roles(const std::string &assertion) {
       std::string value = attribute.second.get_child("saml2:AttributeValue")
                               .get_value<std::string>();
       std::vector<std::string> arns = split(value);
-      assumable_role role{arns[1], arns[0]};
+      role role{arns[1], arns[0]};
       output.push_back(role);
     }
   }
 
   return output;
 }
+
+}  // namespace xml
