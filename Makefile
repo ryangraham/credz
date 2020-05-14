@@ -1,7 +1,14 @@
-all: build
+all:
+	@echo "build - build"
+	@echo "clean - remove built files"
+	@echo "run - build and run"
 
+.PHONY: build
 build:
-	g++ -std=c++11 main.cpp -lcurl -lboost_regex -lboost_program_options -laws-cpp-sdk-sts -laws-cpp-sdk-core
+	cd build && cmake .. && $(MAKE)
+
+clean:
+	rm -rf ./build/* || true
 
 run: build
-	./a.out
+	./build/aws-credz
