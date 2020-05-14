@@ -14,7 +14,7 @@ run: build
 	./build/credz
 
 docker:
-	docker build -t ryangraham/credz:0.0.2 .
+	docker build -t ryangraham/credz:0.0.3 .
 
 push:
-	docker push ryangraham/credz:0.0.2
+	docker push ryangraham/credz:0.0.3

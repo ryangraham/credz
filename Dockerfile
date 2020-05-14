@@ -52,3 +52,10 @@ RUN cd /tmp/sdk/build \
     ../aws-sdk-cpp-${AWS_SDK_CPP_VERSION} \
     && make \
     && make install
+
+RUN cd /tmp \
+    && git clone --depth=1 https://github.com/nlohmann/json.git \
+    && mkdir json/build \
+    && cd json/build \
+    && cmake ../. -DBUILD_TESTING=OFF \
+    && make install
