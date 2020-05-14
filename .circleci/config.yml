@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Install build tools
-          command: sudo apt update && apt-get update && sudo apt install -y build-essential cmake g++
+          command: sudo apt update && sudo apt install -y build-essential cmake g++
       - run:
           name: Build
           command: make build
