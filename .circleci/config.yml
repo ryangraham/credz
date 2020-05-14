@@ -3,12 +3,9 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: ryangraham/credz:0.0.1
+      - image: ryangraham/credz:0.0.2
     steps:
       - checkout
-      - run:
-          name: Install boost
-          command: sudo apt update && sudo apt install -y libboost-all-dev
       - run:
           name: Build
           command: make build

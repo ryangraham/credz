@@ -19,12 +19,13 @@ ENV AWS_SDK_CPP_REQUIRED_LIBS \
     libpulse-dev
 
 ENV BOOST \
-    libboost-dev
+    libboost-all-dev
 
 ENV TOOLS \
     ca-certificates \
     curl \
     git \
+    sudo \
     unzip
 
 ENV AWS_SDK_CPP_VERSION 1.7.334
