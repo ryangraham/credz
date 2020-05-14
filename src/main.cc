@@ -92,6 +92,30 @@ assumable_role select_role(std::vector<assumable_role> roles) {
   return role;
 }
 
+okta::app select_okta_app(std::vector<okta::app> apps) {
+  std::cout << std::endl;
+
+  int menu_count = 1;
+  for (auto &app : apps) {
+    std::cout << menu_count << ". " << app.label << std::endl;
+    menu_count++;
+  }
+  std::cout << std::endl << "Enter a number to select an app: ";
+
+  int number;
+  std::cin >> number;
+
+  if (number > apps.size()) throw(std::runtime_error("Selection out of range"));
+
+  okta::app app = apps[number - 1];
+
+  std::cout << std::endl
+            << "You selected " << number << " - " << app.label << std::endl
+            << std::endl;
+
+  return app;
+}
+
 int main(int argc, char *argv[]) {
   // NOLINTNEXTLINE
   curl_global_init(CURL_GLOBAL_ALL);
@@ -148,16 +172,16 @@ int main(int argc, char *argv[]) {
 
   std::string session_id = okta::get_session_id(session_token, org);
 
-  std::string app_link = okta::get_app_link(session_id, org);
+  std::vector<okta::app> apps = okta::get_apps(session_id, org);
+  okta::app app = select_okta_app(apps);
 
-  std::string saml = okta::get_saml_assertion(app_link, session_id);
+  std::string saml = okta::get_saml_assertion(app.link, session_id);
 
   std::string unescaped_saml = unescape(saml);
 
   std::string decoded_saml = base64::decode(unescaped_saml);
 
   std::vector<assumable_role> roles = get_roles(decoded_saml);
-
   assumable_role role = select_role(roles);
 
   aws::get_creds(unescaped_saml, role.principal_arn, role.role_arn);

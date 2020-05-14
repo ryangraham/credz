@@ -12,6 +12,11 @@ namespace okta {
 
 using json = nlohmann::json;
 
+struct app {
+  std::string label;
+  std::string link;
+};
+
 inline json auth(const std::string &username, const std::string &password,
                  const std::string &org) {
   json auth;
@@ -83,19 +88,22 @@ inline std::string get_session_id(const std::string &session_token,
   return response["id"];
 }
 
-inline std::string get_app_link(const std::string &session_id,
-                                const std::string &org) {
+inline std::vector<app> get_apps(const std::string &session_id,
+                                 const std::string &org) {
+  std::vector<app> results;
   std::string url = "https://" + org + ".okta.com/api/v1/users/me/appLinks";
   std::string buffer;
 
   curl::get(url, buffer, session_id);
   json response = json::parse(buffer);
 
-  // TODO(RG): This assumes only one, but there can be many
-  for (auto &app : response)
-    if (app["appName"] == "amazon_aws") return app["linkUrl"];
+  for (auto &entry : response)
+    if (entry["appName"] == "amazon_aws") {
+      app app{entry["label"], entry["linkUrl"]};
+      results.push_back(app);
+    }
 
-  throw(std::runtime_error("No AWS apps configured in Okta"));
+  return results;
 }
 
 inline std::string get_saml_assertion(const std::string &app_link,
