@@ -24,10 +24,12 @@ inline void get_creds(const std::string &assertion,
       throw(std::runtime_error(result.GetError().GetMessage().c_str()));
 
     auto credentials = result.GetResult().GetCredentials();
-    std::string aws_access_key_id = credentials.GetAccessKeyId().c_str();
+    std::string aws_access_key_id =
+        credentials.GetAccessKeyId().c_str();  // NOLINT
     std::string aws_secret_access_key =
-        credentials.GetSecretAccessKey().c_str();
-    std::string aws_session_token = credentials.GetSessionToken().c_str();
+        credentials.GetSecretAccessKey().c_str();  // NOLINT
+    std::string aws_session_token =
+        credentials.GetSessionToken().c_str();  // NOLINT
 
     std::cout << "aws_access_key_id: " << aws_access_key_id << std::endl;
     std::cout << "aws_secret_access_key: " << aws_secret_access_key
