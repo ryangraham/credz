@@ -12,3 +12,9 @@ clean:
 
 run: build
 	./build/credz
+
+docker:
+	docker build -t ryangraham/credz:0.0.1 .
+
+push:
+	docker push ryangraham/credz:0.0.1

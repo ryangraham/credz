@@ -3,12 +3,9 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/base:2020.01
+      - image: ryangraham/credz:0.0.1
     steps:
       - checkout
-      - run:
-          name: Install build tools
-          command: sudo apt update && sudo apt install -y build-essential cmake g++
       - run:
           name: Build
           command: make build
