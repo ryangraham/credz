@@ -21,3 +21,6 @@ push:
 
 pretty:
 	clang-format -i --style=file src/*.cc src/*.h
+
+tidy:
+	clang-tidy src/* -p ./build
