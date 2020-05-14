@@ -68,6 +68,8 @@ void org_prompt(std::string &org) {
 }
 
 assumable_role select_role(std::vector<assumable_role> roles) {
+  if (roles.size() == 1) return roles[0];
+
   std::cout << std::endl;
 
   int menu_count = 1;
@@ -93,6 +95,8 @@ assumable_role select_role(std::vector<assumable_role> roles) {
 }
 
 okta::app select_okta_app(std::vector<okta::app> apps) {
+  if (apps.size() == 1) return apps[0];
+
   std::cout << std::endl;
 
   int menu_count = 1;
