@@ -11,4 +11,4 @@ clean:
 	rm -rf ./build/* || true
 
 run: build
-	./build/aws-credz
+	./build/credz
