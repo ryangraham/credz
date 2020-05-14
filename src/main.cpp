@@ -1,11 +1,12 @@
+#include <termios.h>
+#include <unistd.h>
+
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <regex>
 #include <string>
-#include <termios.h>
-#include <unistd.h>
 
 #include "aws.hpp"
 #include "base64.hpp"
@@ -90,13 +91,12 @@ assumable_role select_role(std::vector<assumable_role> roles) {
 }
 
 int main(int argc, char *argv[]) {
-
   curl_global_init(CURL_GLOBAL_ALL);
 
   std::string config_file;
   po::options_description desc("Allowed options");
-  desc.add_options()("version,v",
-                     "print version string")("help", "produce help message")(
+  desc.add_options()("version,v", "print version string")(
+      "help", "produce help message")(
       "config,c",
       po::value<std::string>(&config_file)->default_value("~/.credz"),
       "Path to config file");
@@ -131,11 +131,9 @@ int main(int argc, char *argv[]) {
     notify(vm);
   }
 
-  if (!vm.count("Settings.organization"))
-    org_prompt(org);
+  if (!vm.count("Settings.organization")) org_prompt(org);
 
-  if (!vm.count("Settings.username"))
-    username_prompt(username);
+  if (!vm.count("Settings.username")) username_prompt(username);
 
   password_prompt(password);
 

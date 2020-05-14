@@ -37,4 +37,4 @@ inline std::string decode(const std::string &data) {
   return str;
 }
 
-} // namespace base64
+}  // namespace base64

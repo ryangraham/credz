@@ -1,5 +1,6 @@
-#include <string>
 #include <wordexp.h>
+
+#include <string>
 
 namespace path {
 
@@ -11,4 +12,4 @@ void expand(std::string &path) {
   wordfree(&exp_result);
 }
 
-} // namespace path
+}  // namespace path

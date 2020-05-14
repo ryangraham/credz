@@ -18,3 +18,6 @@ docker:
 
 push:
 	docker push ryangraham/credz:0.0.3
+
+pretty:
+	clang-format -i --style=file src/*.cpp src/*.hpp

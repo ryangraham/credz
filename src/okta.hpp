@@ -1,9 +1,10 @@
+#include <termios.h>
+#include <unistd.h>
+
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <regex>
 #include <string>
-#include <termios.h>
-#include <unistd.h>
 
 #include "curl.hpp"
 
@@ -21,8 +22,7 @@ json auth(const std::string &username, const std::string &password,
   std::string buffer;
 
   int res = curl::post(url, payload, buffer);
-  if (res != 0)
-    throw(std::runtime_error("Okta authentication failed"));
+  if (res != 0) throw(std::runtime_error("Okta authentication failed"));
 
   return json::parse(buffer);
 }
@@ -32,8 +32,7 @@ std::string wait_for_push(const std::string &next_url,
   std::string buffer;
   curl::post(next_url, payload, buffer);
   json response = json::parse(buffer);
-  if (response["status"] == "SUCCESS")
-    return response["sessionToken"];
+  if (response["status"] == "SUCCESS") return response["sessionToken"];
 
   if (response["factorStatus"] == "TIMEOUT")
     throw(std::runtime_error("MFA response timed out"));
@@ -63,8 +62,7 @@ std::string verify_push(const json &factor, const std::string &state_token) {
 
 std::string verify_mfa(const json &factors, const std::string &state_token) {
   for (auto &factor : factors)
-    if (factor["factorType"] == "push")
-      return verify_push(factor, state_token);
+    if (factor["factorType"] == "push") return verify_push(factor, state_token);
 
   throw(std::runtime_error("No supported factors"));
 }
@@ -93,8 +91,7 @@ std::string get_app_link(const std::string &session_id,
 
   // TODO: This assumes only one, but there can be many
   for (auto &app : response)
-    if (app["appName"] == "amazon_aws")
-      return app["linkUrl"];
+    if (app["appName"] == "amazon_aws") return app["linkUrl"];
 
   throw(std::runtime_error("No AWS apps configured in Okta"));
 }
@@ -110,10 +107,9 @@ std::string get_saml_assertion(const std::string &app_link,
 
   std::smatch matches;
   int res = std::regex_search(buffer, matches, regex);
-  if (!res)
-    throw(std::runtime_error("SAMLResponse match failed"));
+  if (!res) throw(std::runtime_error("SAMLResponse match failed"));
 
   return matches[1];
 }
 
-} // namespace okta
+}  // namespace okta

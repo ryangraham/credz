@@ -2,6 +2,7 @@
 #include <aws/core/Aws.h>
 #include <aws/sts/STSClient.h>
 #include <aws/sts/model/AssumeRoleWithSAMLRequest.h>
+
 #include <string>
 
 namespace aws {
@@ -35,4 +36,4 @@ void get_creds(const std::string &assertion, const std::string &principal_arn,
   Aws::ShutdownAPI(options);
 }
 
-} // namespace aws
+}  // namespace aws

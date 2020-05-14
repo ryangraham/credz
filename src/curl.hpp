@@ -1,4 +1,5 @@
 #include <curl/curl.h>
+
 #include <string>
 
 namespace curl {
@@ -24,8 +25,7 @@ int get(const std::string &url, std::string &buffer,
   headers = curl_slist_append(headers, cookie.c_str());
 
   curl = curl_easy_init();
-  if (!curl)
-    return -1;
+  if (!curl) return -1;
 
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
@@ -35,8 +35,7 @@ int get(const std::string &url, std::string &buffer,
   curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
   res = curl_easy_perform(curl);
 
-  if (res == CURLE_HTTP_RETURNED_ERROR)
-    ret = -1;
+  if (res == CURLE_HTTP_RETURNED_ERROR) ret = -1;
 
   curl_easy_cleanup(curl);
 
@@ -55,8 +54,7 @@ int post(const std::string &url, const std::string &payload,
   headers = curl_slist_append(headers, "charset: utf-8");
 
   curl = curl_easy_init();
-  if (!curl)
-    return -1;
+  if (!curl) return -1;
 
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -66,12 +64,11 @@ int post(const std::string &url, const std::string &payload,
   curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
   res = curl_easy_perform(curl);
 
-  if (res == CURLE_HTTP_RETURNED_ERROR)
-    ret = -1;
+  if (res == CURLE_HTTP_RETURNED_ERROR) ret = -1;
 
   curl_easy_cleanup(curl);
 
   return ret;
 }
 
-} // namespace curl
+}  // namespace curl
