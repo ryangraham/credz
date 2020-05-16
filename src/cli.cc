@@ -130,8 +130,8 @@ settings main(int argc, char *argv[]) {
   std::string username;
   std::string password;
   po::options_description config("Configuration");
-  config.add_options()("Settings.organization", po::value<std::string>(&org),
-                       "Okta organization")("Settings.username",
+  config.add_options()("Okta.organization", po::value<std::string>(&org),
+                       "Okta organization")("Okta.username",
                                             po::value<std::string>(&username));
 
   po::variables_map vm;
