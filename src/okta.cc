@@ -1,5 +1,8 @@
 #include "okta.h"
 
+#include "cli.h"
+#include "unescape.h"
+
 using json = nlohmann::json;
 
 namespace okta {
@@ -105,6 +108,24 @@ std::string get_saml_assertion(const std::string &app_link,
   if (!res) throw(std::runtime_error("SAMLResponse match failed"));
 
   return matches[1];
+}
+
+std::string main(const std::string &username, const std::string &password,
+                 const std::string &org) {
+  json response = okta::auth(username, password, org);
+  std::string state_token = response["stateToken"];
+  json factors = response["_embedded"]["factors"];
+
+  std::string session_token = okta::verify_mfa(factors, state_token);
+
+  std::string session_id = okta::get_session_id(session_token, org);
+
+  std::vector<okta::app> apps = okta::get_apps(session_id, org);
+  okta::app app = cli::select_okta_app(apps);
+
+  std::string saml = okta::get_saml_assertion(app.link, session_id);
+
+  return unescape(saml);
 }
 
 }  // namespace okta

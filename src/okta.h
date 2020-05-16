@@ -19,6 +19,9 @@ struct app {
   std::string link;
 };
 
+std::string main(const std::string &username, const std::string &password,
+          const std::string &org);
+
 json auth(const std::string &username, const std::string &password,
           const std::string &org);
 
