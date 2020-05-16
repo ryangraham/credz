@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-FIND_PACKAGE(Boost COMPONENTS program_options regex REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS filesystem program_options regex REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 find_package(CURL REQUIRED)
@@ -17,7 +17,7 @@ find_package(AWSSDK REQUIRED COMPONENTS sts)
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
-add_executable(credz src/main.cc)
+add_executable(credz src/main.cc src/aws.cc)
 
 TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES})
 

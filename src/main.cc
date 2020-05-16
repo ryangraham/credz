@@ -10,6 +10,7 @@
 
 #include "aws.h"
 #include "base64.h"
+#include "ini.h"
 #include "okta.h"
 #include "path.h"
 #include "unescape.h"
@@ -188,7 +189,12 @@ int main(int argc, char *argv[]) {
   std::vector<xml::role> roles = xml::get_roles(decoded_saml);
   xml::role role = select_role(roles);
 
-  aws::get_creds(unescaped_saml, role.principal_arn, role.role_arn);
+  auto profile = aws::assume_role_with_saml(unescaped_saml, role.principal_arn,
+                                            role.role_arn);
+  profile.name = "credz";
+
+  auto tree = ini::load_file();
+  ini::put_profile(tree, profile);
 
   curl_global_cleanup();
   return 0;

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <wordexp.h>
 
 #include <string>
