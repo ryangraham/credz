@@ -163,9 +163,9 @@ int main(int argc, char *argv[]) {
     notify(vm);
   }
 
-  if (vm.count("Settings.organization") == 0u) org_prompt(org);
+  if (vm.count("Okta.organization") == 0u) org_prompt(org);
 
-  if (vm.count("Settings.username") == 0u) username_prompt(username);
+  if (vm.count("Okta.username") == 0u) username_prompt(username);
 
   password_prompt(password);
 
