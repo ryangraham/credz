@@ -1,5 +1,7 @@
 #include <string>
 
+#include "doctest/doctest.h"
+
 namespace base64 {
 
 static const int B64index[256] = {
@@ -38,3 +40,10 @@ inline std::string decode(const std::string &data) {
 }
 
 }  // namespace base64
+
+TEST_CASE("testing base64 decode") {
+  std::string input = "cm9mbG1hbw==";
+  std::string expected = "roflmao";
+
+  CHECK(base64::decode(input) == expected);
+}
