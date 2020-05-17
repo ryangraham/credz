@@ -85,4 +85,4 @@ enable_keychain = true
 
 ## Goals
 
-I started this project because I got frustrated trying to install the popular java CLI on Catalina. I pivoted to a few different python competitors and quickly ran into bugs I didn't want to fix. So I'd like to make this _easier_, but only time will tell. Please file issues in github as you run across them and I will try to respond on the weekend. :beer:
+I started this project because I got frustrated trying to install the popular java CLI on Catalina. I pivoted to a few different python competitors and quickly ran into bugs I didn't want to fix. So I'd like to make this _easier_, but only time will tell. Please [file issues](https://github.com/ryangraham/credz/issues/new) as you run across them. :beer:
