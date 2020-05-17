@@ -13,12 +13,12 @@
 
 namespace ini {
 
-bool profile_exists(boost::property_tree::ptree root,
+bool profile_exists(const boost::property_tree::ptree &root,
                     const std::string &profile_name) {
   return root.count(profile_name) != 0;
 }
 
-aws::profile get_profile(boost::property_tree::ptree root,
+aws::profile get_profile(const boost::property_tree::ptree &root,
                          const std::string &profile_name) {
   aws::profile profile;
   profile.name = profile_name;
@@ -31,7 +31,8 @@ aws::profile get_profile(boost::property_tree::ptree root,
   return profile;
 }
 
-void put_profile(boost::property_tree::ptree root, aws::profile profile) {
+void put_profile(boost::property_tree::ptree root,
+                 const aws::profile &profile) {
   root.put(profile.name + ".aws_access_key_id", profile.aws_access_key_id);
   root.put(profile.name + ".aws_secret_access_key",
            profile.aws_secret_access_key);
