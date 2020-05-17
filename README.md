@@ -20,12 +20,23 @@ WIP
 
 ### CMake
 
+First you will need Boost and the AWS CPP SDK.
+
+```
+brew install boost
+brew install aws-sdk-cpp
+```
+
+Then clone and build credz.
+
 ```
 git clone git@github.com:ryangraham/credz.git
 cd credz
 make install
 ```
+
 It should have installed to `/usr/local/bin/credz`, but lets test it out.
+
 ```
 credz -v
 ```
