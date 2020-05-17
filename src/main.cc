@@ -23,10 +23,12 @@ int main(int argc, char *argv[]) {
 
   auto profile =
       aws::assume_role_with_saml(saml, role.principal_arn, role.role_arn);
-  profile.name = "credz";
+  profile.name = settings.profile_name;
 
   auto tree = ini::load_file();
   ini::put_profile(tree, profile);
+  std::cout << "Profile " << profile.name << " written to credentials file."
+            << std::endl;
 
   curl_global_cleanup();
   return 0;

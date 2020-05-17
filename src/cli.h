@@ -9,6 +9,7 @@ struct settings {
   std::string username;
   std::string password;
   std::string org;
+  std::string profile_name;
 };
 
 settings main(int argc, char *argv[]);

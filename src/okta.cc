@@ -19,6 +19,8 @@ json auth(const std::string &username, const std::string &password,
   int res = curl::post(url, payload, buffer);
   if (res != 0) throw(std::runtime_error("Okta authentication failed"));
 
+  std::cout << "Okta authentication complete." << std::endl;
+
   return json::parse(buffer);
 }
 
@@ -27,7 +29,10 @@ std::string wait_for_push(const std::string &next_url,
   std::string buffer;
   curl::post(next_url, payload, buffer);
   json response = json::parse(buffer);
-  if (response["status"] == "SUCCESS") return response["sessionToken"];
+  if (response["status"] == "SUCCESS") {
+    std::cout << "Okta Push confirmed." << std::endl;
+    return response["sessionToken"];
+  }
 
   if (response["factorStatus"] == "TIMEOUT")
     throw(std::runtime_error("MFA response timed out"));

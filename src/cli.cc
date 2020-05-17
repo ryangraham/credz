@@ -142,12 +142,16 @@ void get_password(const std::string &org, const std::string &username,
 
 settings main(int argc, char *argv[]) {
   std::string config_file;
+  std::string profile_name;
   po::options_description desc("Allowed options");
   desc.add_options()("version,v", "print version string")(
       "help", "produce help message")(
       "config,c",
       po::value<std::string>(&config_file)->default_value("~/.credz"),
-      "Path to config file");
+      "Path to config file")(
+      "profile,p",
+      po::value<std::string>(&profile_name)->default_value("credz"),
+      "Profile name to create in ~/aws/credentials");
 
   std::string org;
   std::string username;
@@ -187,7 +191,7 @@ settings main(int argc, char *argv[]) {
 
   get_password(org, username, password, enable_keychain);
 
-  return settings{username, password, org};
+  return settings{username, password, org, profile_name};
 }
 
 }  // namespace cli

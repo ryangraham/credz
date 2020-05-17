@@ -36,6 +36,8 @@ profile assume_role_with_saml(const std::string &assertion,
   profile.aws_secret_access_key = aws_secret_access_key;
   profile.aws_session_token = aws_session_token;
 
+  std::cout << "AWS assume role with SAML complete." << std::endl;
+
   return profile;
 }
 
