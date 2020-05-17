@@ -20,9 +20,11 @@ WIP
 
 ### CMake
 
-First you will need Boost and the AWS CPP SDK.
+First you will need Boost, nlohmann_json, and the AWS CPP SDK.
 
 ```
+brew tap nlohmann/json
+brew install nlohmann-json
 brew install boost
 brew install aws-sdk-cpp
 ```
