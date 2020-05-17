@@ -81,7 +81,6 @@ The default config file is `~/.credz`
 organization = mycompany
 username = ryang
 enable_keychain = true
-
 ```
 
 ## Goals
