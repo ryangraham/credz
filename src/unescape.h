@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#include "doctest/doctest.h"
+
 /*
  * Unescape HTML entities
  *
@@ -28,4 +30,11 @@ inline std::string unescape(const std::string &input) {
   }
 
   return output;
+}
+
+TEST_CASE("testing html unescape") {
+  std::string input = "DEADBEEF&#x2B;123456ABCDEF&#x3D;&#x3D;123&#x3D;";
+  std::string expected = "DEADBEEF+123456ABCDEF==123=";
+
+  CHECK(unescape(input) == expected);
 }
