@@ -6,6 +6,7 @@
 #include <boost/program_options.hpp>
 #include <fstream>
 
+#include "keychain.h"
 #include "okta.h"
 #include "path.h"
 #include "version.h"
@@ -117,6 +118,22 @@ okta::app select_okta_app(std::vector<okta::app> apps) {
   return app;
 }
 
+void get_password(const std::string &org, const std::string &username,
+                  std::string &password) {
+#ifdef __APPLE__
+  std::string service_name = "credz";
+  std::string account_name = org + "-" + username;
+  auto success = keychain::get_password(service_name, account_name, password);
+
+  if (!success) {
+    password_prompt(password);
+    keychain::set_password(service_name, account_name, password);
+  }
+#else
+  password_prompt(password);
+#endif
+}
+
 settings main(int argc, char *argv[]) {
   std::string config_file;
   po::options_description desc("Allowed options");
@@ -159,7 +176,7 @@ settings main(int argc, char *argv[]) {
 
   if (vm.count("Okta.username") == 0u) username_prompt(username);
 
-  password_prompt(password);
+  get_password(org, username, password);
 
   return settings{username, password, org};
 }

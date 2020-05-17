@@ -15,11 +15,15 @@ include_directories(${CURL_INCLUDE_DIRS})
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 find_package(AWSSDK REQUIRED COMPONENTS sts)
 
+IF(APPLE)
+	FIND_LIBRARY(SECURITY Security)
+ENDIF(APPLE)
+
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
-add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc)
+add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/keychain.cc)
 
-TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES})
+TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} ${SECURITY})
 
 ADD_CUSTOM_TARGET(
     version
