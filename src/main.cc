@@ -9,21 +9,6 @@
 #include "okta.h"
 #include "xml.h"
 
-class dt_removed {
-  std::vector<char*> vec;
-
- public:
-  dt_removed(char** argv_in) {
-    for (; *argv_in; ++argv_in)
-      if (strncmp(*argv_in, "--dt-", strlen("--dt-")) != 0)
-        vec.push_back(*argv_in);
-    vec.push_back(NULL);
-  }
-
-  int argc() { return static_cast<int>(vec.size()) - 1; }
-  char** argv() { return &vec[0]; }
-};
-
 int main(int argc, char* argv[]) {
   // NOLINTNEXTLINE
   curl_global_init(CURL_GLOBAL_ALL);
