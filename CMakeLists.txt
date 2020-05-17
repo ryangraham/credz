@@ -25,11 +25,14 @@ add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc sr
 
 TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} ${SECURITY})
 
+add_definitions(-DPATCH_VERSION="")
+
 ADD_CUSTOM_TARGET(
     version
     ${CMAKE_COMMAND} -D SRC=${CMAKE_SOURCE_DIR}/cmake/version.h.in
                      -D DST=${CMAKE_BINARY_DIR}/version.h
                      -D PROJECT_VERSION=${CMAKE_PROJECT_VERSION}
+                     -D PATCH_VERSION=${PATCH_VERSION}
                      -P ${CMAKE_SOURCE_DIR}/cmake/version.cmake
 )
 ADD_DEPENDENCIES(credz version)
