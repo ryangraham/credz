@@ -6,13 +6,29 @@
 Turn your Okta identity into AWS credentials on the command line.
 
 - [Installation](#installation)
+  - [Homebrew](#homebrew)
+  - [CMake](#cmake)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Goals](#goals)
 
 ## Installation
 
+### Homebrew
+
 WIP
+
+### CMake
+
+```
+git clone git@github.com:ryangraham/credz.git
+cd credz
+make install
+```
+It should have installed to `/usr/local/bin/credz`, but lets test it out.
+```
+credz -v
+```
 
 ## Usage
 

@@ -24,3 +24,6 @@ pretty:
 
 tidy:
 	clang-tidy src/* -p ./build
+
+install: clean build
+	cd build && $(MAKE) install

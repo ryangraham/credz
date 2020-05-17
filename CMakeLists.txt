@@ -33,3 +33,5 @@ ADD_CUSTOM_TARGET(
                      -P ${CMAKE_SOURCE_DIR}/cmake/version.cmake
 )
 ADD_DEPENDENCIES(credz version)
+
+install(TARGETS credz DESTINATION bin)
