@@ -119,8 +119,14 @@ okta::app select_okta_app(std::vector<okta::app> apps) {
 }
 
 void get_password(const std::string &org, const std::string &username,
-                  std::string &password) {
+                  std::string &password, bool enable_keychain) {
 #ifdef __APPLE__
+
+  if (!enable_keychain) {
+    password_prompt(password);
+    return;
+  }
+
   std::string service_name = "credz";
   std::string account_name = org + "-" + username;
   auto success = keychain::get_password(service_name, account_name, password);
@@ -146,10 +152,13 @@ settings main(int argc, char *argv[]) {
   std::string org;
   std::string username;
   std::string password;
+  bool enable_keychain;
   po::options_description config("Configuration");
   config.add_options()("Okta.organization", po::value<std::string>(&org),
                        "Okta organization")("Okta.username",
-                                            po::value<std::string>(&username));
+                                            po::value<std::string>(&username))(
+      "Okta.enable_keychain",
+      po::value<bool>(&enable_keychain)->default_value(true));
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -176,7 +185,7 @@ settings main(int argc, char *argv[]) {
 
   if (vm.count("Okta.username") == 0u) username_prompt(username);
 
-  get_password(org, username, password);
+  get_password(org, username, password, enable_keychain);
 
   return settings{username, password, org};
 }
