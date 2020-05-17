@@ -53,6 +53,10 @@ credz -v
 
 ## Usage
 
+On first run you will be prompted for your Okta organization, username, and password. credz will store the password in your keychain and everything else in a config file for future use.
+
+Note: If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`
+
 ```
 ➜  credz git:(master) ✗ ./credz -p dev
 Okta authentication complete.
@@ -67,8 +71,6 @@ Then test it out with AWS CLI.
 aws sts get-caller-identity --profile dev
 ```
 
-On first run you may also be prompted for the name of your Okta org, username, & password. I recommend saving your organization and username in the config file. Credz will save the password in your keychain for you.
-
 ## Configuration
 
 The default config file is `~/.credz`
@@ -80,8 +82,7 @@ username = ryang
 enable_keychain = true
 
 ```
-If your Okta URL is `https://scooterz.okta.com`, then your Okta organization in the config file should be `scooterz`
 
 ## Goals
 
-WIP
+I started this project because I got frustrated trying to install the popular java CLI on Catalina. I pivoted to a few different python competitors and quickly ran into bugs I didn't want to fix. So I'd like to make this _easier_, but only time will tell. Please file issues in github as you run across them and I will try to respond on the weekend. :beer:
