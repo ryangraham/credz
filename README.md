@@ -46,7 +46,7 @@ Then test it out with AWS CLI.
 aws sts get-caller-identity --profile dev
 ```
 
-On first run you may also be prompted for the name of your Okta org, username, & password. I recommend saving the first two in the config file and the password in your keychain.
+On first run you may also be prompted for the name of your Okta org, username, & password. I recommend saving your organization and username in the config file. Credz will save the password in your keychain for you.
 
 ## Configuration
 
