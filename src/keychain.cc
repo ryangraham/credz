@@ -13,6 +13,8 @@ bool set_password(const std::string &service_name, const std::string &account,
       nullptr, service_name.size(), service_name.c_str(), account.size(),
       account.c_str(), password.size(), password.c_str(), nullptr);
 
+  if (ret == 0) std::cout << "Password written to keychain." << std::endl;
+
   return ret == 0;
 }
 

@@ -62,4 +62,19 @@ boost::property_tree::ptree load_file() {
   return root;
 }
 
+void write_config(const std::string &org, const std::string &username,
+                  std::string config_file) {
+  path::expand(config_file);
+  if (boost::filesystem::exists(config_file)) return;
+
+  boost::property_tree::ptree root;
+  root.put("Okta.organization", org);
+  root.put("Okta.username", username);
+  root.put("Okta.enable_keychain", "true");
+
+  write_ini(config_file, root);
+  std::cout << "Organization and username written to configuration file."
+            << std::endl;
+}
+
 }  // namespace ini

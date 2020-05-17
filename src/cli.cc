@@ -6,6 +6,7 @@
 #include <boost/program_options.hpp>
 #include <fstream>
 
+#include "ini.h"
 #include "keychain.h"
 #include "okta.h"
 #include "path.h"
@@ -188,6 +189,8 @@ settings main(int argc, char *argv[]) {
   if (vm.count("Okta.organization") == 0u) org_prompt(org);
 
   if (vm.count("Okta.username") == 0u) username_prompt(username);
+
+  ini::write_config(org, username, config_file);
 
   get_password(org, username, password, enable_keychain);
 

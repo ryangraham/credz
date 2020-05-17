@@ -17,4 +17,7 @@ void put_profile(boost::property_tree::ptree root, const aws::profile &profile);
 
 boost::property_tree::ptree load_file();
 
+void write_config(const std::string &org, const std::string &username,
+                  std::string config_file);
+
 }  // namespace ini
