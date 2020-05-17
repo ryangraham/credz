@@ -21,6 +21,8 @@ ENDIF(APPLE)
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
+INCLUDE_DIRECTORIES(thirdparty)
+
 add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/keychain.cc src/ini.cc)
 
 TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} ${SECURITY})

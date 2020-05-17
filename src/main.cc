@@ -1,3 +1,6 @@
+#define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
+#define DOCTEST_CONFIG_IMPLEMENT
+#include <doctest/doctest.h>
 
 #include <string>
 
@@ -8,7 +11,22 @@
 #include "okta.h"
 #include "xml.h"
 
-int main(int argc, char *argv[]) {
+class dt_removed {
+  std::vector<char*> vec;
+
+ public:
+  dt_removed(char** argv_in) {
+    for (; *argv_in; ++argv_in)
+      if (strncmp(*argv_in, "--dt-", strlen("--dt-")) != 0)
+        vec.push_back(*argv_in);
+    vec.push_back(NULL);
+  }
+
+  int argc() { return static_cast<int>(vec.size()) - 1; }
+  char** argv() { return &vec[0]; }
+};
+
+int program(int argc, char* argv[]) {
   // NOLINTNEXTLINE
   curl_global_init(CURL_GLOBAL_ALL);
 
@@ -31,5 +49,31 @@ int main(int argc, char *argv[]) {
             << std::endl;
 
   curl_global_cleanup();
-  return 0;
+
+  return EXIT_SUCCESS;
+}
+
+int main(int argc, char** argv) {
+  doctest::Context context(argc, argv);
+  int test_result = context.run();  // run queries, or run tests unless --no-run
+
+  if (context.shouldExit())  // honor query flags and --exit
+    return test_result;
+
+  dt_removed args(argv);
+  int app_result = program(args.argc(), args.argv());
+
+  return test_result + app_result;  // combine the 2 results
+}
+
+int factorial(const int number) {
+  return number < 1 ? 1 : number <= 1 ? number : factorial(number - 1) * number;
+}
+
+TEST_CASE("testing the factorial function") {
+  CHECK(factorial(0) == 1);
+  CHECK(factorial(1) == 1);
+  CHECK(factorial(2) == 2);
+  CHECK(factorial(3) == 6);
+  CHECK(factorial(10) == 3628800);
 }
