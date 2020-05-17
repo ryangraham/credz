@@ -18,7 +18,13 @@ _warning: this is alpha software and it will overwrite your entire ~/.aws/creden
 
 ### Homebrew
 
-WIP
+This is the easiest and preferred method of installation.
+
+```
+brew tap ryangraham/credz
+brew install credz
+credz -v
+```
 
 ### CMake
 
