@@ -10,5 +10,8 @@ jobs:
           name: Build
           command: make build
       - run:
+          name: Test
+          command: ./build/credz --test 
+      - run:
           name: Run
           command: ./build/credz --version
