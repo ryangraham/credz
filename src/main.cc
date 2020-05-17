@@ -1,5 +1,3 @@
-#define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
-#define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
 #include <string>
@@ -26,7 +24,7 @@ class dt_removed {
   char** argv() { return &vec[0]; }
 };
 
-int program(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
   // NOLINTNEXTLINE
   curl_global_init(CURL_GLOBAL_ALL);
 
@@ -51,19 +49,6 @@ int program(int argc, char* argv[]) {
   curl_global_cleanup();
 
   return EXIT_SUCCESS;
-}
-
-int main(int argc, char** argv) {
-  doctest::Context context(argc, argv);
-  int test_result = context.run();  // run queries, or run tests unless --no-run
-
-  if (context.shouldExit())  // honor query flags and --exit
-    return test_result;
-
-  dt_removed args(argv);
-  int app_result = program(args.argc(), args.argv());
-
-  return test_result + app_result;  // combine the 2 results
 }
 
 int factorial(const int number) {

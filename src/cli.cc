@@ -1,3 +1,4 @@
+
 #include "cli.h"
 
 #include <termios.h>
@@ -12,6 +13,11 @@
 #include "path.h"
 #include "version.h"
 #include "xml.h"
+
+#define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
+#define DOCTEST_CONFIG_IMPLEMENT
+
+#include <doctest/doctest.h>
 
 namespace po = boost::program_options;
 
@@ -141,9 +147,17 @@ void get_password(const std::string &org, const std::string &username,
 #endif
 }
 
+void doctest(int argc, char **argv) {
+  doctest::Context context(argc, argv);
+  int test_result = context.run();
+
+  exit(test_result);
+}
+
 settings main(int argc, char *argv[]) {
   std::string config_file;
   std::string profile_name;
+  bool run_tests = false;
   po::options_description desc("Allowed options");
   desc.add_options()("version,v", "print version string")(
       "help", "produce help message")(
@@ -152,7 +166,8 @@ settings main(int argc, char *argv[]) {
       "Path to config file")(
       "profile,p",
       po::value<std::string>(&profile_name)->default_value("credz"),
-      "Profile name to create in ~/aws/credentials");
+      "Profile name to create in ~/aws/credentials")(
+      "test,t", po::bool_switch(&run_tests), "Run doctests");
 
   std::string org;
   std::string username;
@@ -168,6 +183,8 @@ settings main(int argc, char *argv[]) {
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
   po::notify(vm);
+
+  if (run_tests) doctest(argc, argv);
 
   if (vm.count("help") != 0u) {
     std::cout << desc << std::endl;
