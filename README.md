@@ -25,7 +25,7 @@ brew tap ryangraham/credz
 brew install credz
 credz -v
 ```
-<p align="center"><img src="/img/demo.gif?raw=true"/></p>
+<p align="center"><img src="/images/install.gif?raw=true"/></p>
 
 ## Usage
 
