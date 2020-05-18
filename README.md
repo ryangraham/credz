@@ -10,7 +10,6 @@ _warning: this is alpha software and it will overwrite your entire ~/.aws/creden
 
 - [Installation](#installation)
   - [Homebrew](#homebrew)
-  - [CMake](#cmake)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Goals](#goals)
@@ -26,31 +25,7 @@ brew tap ryangraham/credz
 brew install credz
 credz -v
 ```
-
-### CMake
-
-First you will need Boost, nlohmann_json, and the AWS CPP SDK.
-
-```
-brew tap nlohmann/json
-brew install nlohmann-json
-brew install boost
-brew install aws-sdk-cpp
-```
-
-Then clone and build credz.
-
-```
-git clone git@github.com:ryangraham/credz.git
-cd credz
-make install
-```
-
-It should have installed to `/usr/local/bin/credz`, but lets test it out.
-
-```
-credz -v
-```
+<p align="center"><img src="/img/demo.gif?raw=true"/></p>
 
 ## Usage
 
