@@ -6,8 +6,6 @@
 
 Turn your Okta identity into AWS credentials on the command line.
 
-_warning: this is alpha software and it will overwrite your ~/.aws/credentials file. I recommend taking a manual backup beforehand._
-
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
@@ -26,6 +24,8 @@ credz -v
 
 ## Usage
 
+_warning: this is alpha software and it will overwrite your ~/.aws/credentials file. I recommend taking a manual backup beforehand._
+
 First run credz to populate a profile named test.
 ```
 credz -p test
@@ -38,18 +38,25 @@ This information will be cached for subsequent runs.
 
 Next test out your new profile with AWS CLI.
 ```
-aws sts get-caller-identity --profile dev
+aws sts get-caller-identity --profile test
 ```
+
+<img src="/images/usage.gif?raw=true"/>
 
 ## Configuration
 
-The default config file is `~/.credz`
+credz will generate a config file for you. (_~/.credz_)
 
 ```
 [Okta]
 organization = mycompany
 username = ryang
 enable_keychain = true
+```
+
+You can also use the _-c_ flag to point credz at an alternate config file.
+```
+credz -c other.cfg -p tao
 ```
 
 ## Goals
