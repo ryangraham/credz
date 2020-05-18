@@ -6,81 +6,58 @@
 
 Turn your Okta identity into AWS credentials on the command line.
 
-_warning: this is alpha software and it will overwrite your entire ~/.aws/credentials file. I recommend taking a manual backup beforehand._
+<img src="/images/usage.gif?raw=true"/>
+
+## Table of Contents
 
 - [Installation](#installation)
-  - [Homebrew](#homebrew)
-  - [CMake](#cmake)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Goals](#goals)
 
 ## Installation
 
-### Homebrew
-
-This is the easiest and preferred method of installation.
+Install credz using [Homebrew](https://brew.sh/).
 
 ```
 brew tap ryangraham/credz
 brew install credz
 credz -v
 ```
-
-### CMake
-
-First you will need Boost, nlohmann_json, and the AWS CPP SDK.
-
-```
-brew tap nlohmann/json
-brew install nlohmann-json
-brew install boost
-brew install aws-sdk-cpp
-```
-
-Then clone and build credz.
-
-```
-git clone git@github.com:ryangraham/credz.git
-cd credz
-make install
-```
-
-It should have installed to `/usr/local/bin/credz`, but lets test it out.
-
-```
-credz -v
-```
+<img src="/images/install_1.gif?raw=true"/>
 
 ## Usage
 
-On first run you will be prompted for your Okta organization, username, and password. credz will store the password in your keychain and everything else in a config file for future use.
+_warning: this is alpha software and it will overwrite your ~/.aws/credentials file. I recommend taking a manual backup beforehand._
 
-Note: If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`
+First run credz to populate a profile named test.
+```
+credz -p test
+```
+The first time you run credz you will be prompted for three things. This information will be cached for subsequent runs.
+1. Okta Organization (_If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`_)
+2. Okta Username
+3. Okta Password
 
+Next test out your new profile with AWS CLI.
 ```
-➜  credz git:(master) ✗ ./credz -p dev
-Okta authentication complete.
-Okta Push initiated. Waiting for response...
-Okta Push confirmed.
-AWS assume role with SAML complete.
-Profile dev written to credentials file.
-➜  credz git:(master) ✗
-```
-Then test it out with AWS CLI.
-```
-aws sts get-caller-identity --profile dev
+aws sts get-caller-identity --profile test
 ```
 
 ## Configuration
 
-The default config file is `~/.credz`
+credz will generate the default config file for you. (_~/.credz_)
 
 ```
 [Okta]
 organization = mycompany
 username = ryang
 enable_keychain = true
+```
+
+Use the _-c_ flag to specify an alternate config file.
+```
+credz -c other.cfg -p tao
 ```
 
 ## Goals
