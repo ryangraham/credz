@@ -46,7 +46,7 @@ aws sts get-caller-identity --profile test
 
 ## Configuration
 
-credz will generate a config file for you. (_~/.credz_)
+credz will generate the default config file for you. (_~/.credz_)
 
 ```
 [Okta]
@@ -55,7 +55,7 @@ username = ryang
 enable_keychain = true
 ```
 
-You can also use the _-c_ flag to point credz at an alternate config file.
+Use the _-c_ flag to specify an alternate config file.
 ```
 credz -c other.cfg -p tao
 ```
