@@ -2,9 +2,13 @@
 [![Build Status](https://circleci.com/gh/ryangraham/credz.svg?style=svg)](https://circleci.com/gh/ryangraham/credz)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ryangraham/credz/master/LICENSE)
 
+<img src="/images/usage.gif?raw=true"/>
+
 # credz
 
 Turn your Okta identity into AWS credentials on the command line.
+
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -30,18 +34,15 @@ First run credz to populate a profile named test.
 ```
 credz -p test
 ```
-The first time you run credz you will be prompted for three things.
+The first time you run credz you will be prompted for three things. This information will be cached for subsequent runs.
 1. Okta Organization (_If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`_)
-2. Okta Username (This can be your username or your full email address)
-3. Okta Password.
-This information will be cached for subsequent runs.
+2. Okta Username
+3. Okta Password
 
 Next test out your new profile with AWS CLI.
 ```
 aws sts get-caller-identity --profile test
 ```
-
-<img src="/images/usage.gif?raw=true"/>
 
 ## Configuration
 
