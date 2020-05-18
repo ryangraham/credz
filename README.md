@@ -26,20 +26,17 @@ credz -v
 
 ## Usage
 
-On first run you will be prompted for your Okta organization, username, and password. credz will store the password in your keychain and everything else in a config file for future use.
-
-Note: If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`
-
+First run credz to populate a profile named test.
 ```
-➜  credz git:(master) ✗ ./credz -p dev
-Okta authentication complete.
-Okta Push initiated. Waiting for response...
-Okta Push confirmed.
-AWS assume role with SAML complete.
-Profile dev written to credentials file.
-➜  credz git:(master) ✗
+credz -p test
 ```
-Then test it out with AWS CLI.
+The first time you run credz you will be prompted for three things.
+1. Okta Organization (_If your Okta URL is `https://scooterz.okta.com`, then your Okta organization will be `scooterz`_)
+2. Okta Username (This can be your username or your full email address)
+3. Okta Password.
+This information will be cached for subsequent runs.
+
+Next test out your new profile with AWS CLI.
 ```
 aws sts get-caller-identity --profile dev
 ```
