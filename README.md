@@ -18,7 +18,7 @@ _warning: this is alpha software and it will overwrite your entire ~/.aws/creden
 
 ### Homebrew
 
-This is the easiest and preferred method of installation.
+[Homewbrew](https://brew.sh/) is the preferred installation method.
 
 ```
 brew tap ryangraham/credz
