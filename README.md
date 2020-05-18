@@ -6,19 +6,16 @@
 
 Turn your Okta identity into AWS credentials on the command line.
 
-_warning: this is alpha software and it will overwrite your entire ~/.aws/credentials file. I recommend taking a manual backup beforehand._
+_warning: this is alpha software and it will overwrite your ~/.aws/credentials file. I recommend taking a manual backup beforehand._
 
 - [Installation](#installation)
-  - [Homebrew](#homebrew)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Goals](#goals)
 
 ## Installation
 
-### Homebrew
-
-[Homewbrew](https://brew.sh/) is the preferred installation method.
+Install credz using [Homebrew](https://brew.sh/).
 
 ```
 brew tap ryangraham/credz
