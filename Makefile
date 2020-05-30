@@ -17,7 +17,7 @@ clean:
 	rm -rf ./build/* || true
 
 docker:
-	docker build -t ryangraham/credz:0.0.3 .
+	docker build -t ryangraham/credz:0.0.4 .
 
 install: clean build
 	cd build && $(MAKE) install
@@ -26,7 +26,7 @@ pretty:
 	clang-format -i --style=file src/*.cc src/*.h
 
 push:
-	docker push ryangraham/credz:0.0.3
+	docker push ryangraham/credz:0.0.4
 
 run: build
 	./build/credz

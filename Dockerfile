@@ -49,6 +49,7 @@ RUN cd /tmp/sdk/build \
     -DENABLE_TESTING=OFF \
     -DAUTORUN_UNIT_TESTS=OFF \
     -DBUILD_ONLY="sts" \
+    -DBUILD_SHARED_LIBS=OFF \
     ../aws-sdk-cpp-${AWS_SDK_CPP_VERSION} \
     && make \
     && make install
