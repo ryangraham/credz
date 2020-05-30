@@ -1,7 +1,6 @@
 #include <cfg/cfg.h>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
 #include <string>
 
 #include "aws.h"
@@ -24,7 +23,7 @@ void put_profile(cfg::ctree root, const aws::profile &profile) {
   std::string dir_path = AWS_CRED_DIR;
   path::expand(dir_path);
 
-  boost::filesystem::create_directories(dir_path);
+  std::filesystem::create_directories(dir_path);
 
   cfg::write_ini(full_path, root);
 }
@@ -35,7 +34,7 @@ cfg::ctree load_file() {
   std::string full_path = AWS_CRED_FULL_PATH;
   path::expand(full_path);
 
-  if (!boost::filesystem::exists(full_path)) return root;
+  if (!std::filesystem::exists(full_path)) return root;
 
   cfg::read_ini(full_path, root);
 
@@ -45,7 +44,7 @@ cfg::ctree load_file() {
 void write_config(const std::string &org, const std::string &username,
                   std::string config_file) {
   path::expand(config_file);
-  if (boost::filesystem::exists(config_file)) return;
+  if (std::filesystem::exists(config_file)) return;
 
   cfg::ctree root;
   root["Okta"]["organization"] = org;
