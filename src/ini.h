@@ -1,21 +1,15 @@
 #pragma once
-#include <boost/property_tree/ptree.hpp>
+#include <cfg/cfg.h>
+
 #include <string>
 
 #include "aws.h"
-#include "path.h"
 
 namespace ini {
 
-bool profile_exists(const boost::property_tree::ptree &root,
-                    const std::string &profile_name);
+void put_profile(cfg::ctree root, const aws::profile &profile);
 
-aws::profile get_profile(const boost::property_tree::ptree &root,
-                         const std::string &profile_name);
-
-void put_profile(boost::property_tree::ptree root, const aws::profile &profile);
-
-boost::property_tree::ptree load_file();
+cfg::ctree load_file();
 
 void write_config(const std::string &org, const std::string &username,
                   std::string config_file);

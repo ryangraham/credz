@@ -59,3 +59,8 @@ RUN cd /tmp \
     && cd json/build \
     && cmake ../. -DBUILD_TESTING=OFF \
     && make install
+
+RUN cd /tmp \
+    && git clone --depth=1 https://github.com/ryangraham/cfg.git \
+    && cd cfg \
+    && make install
