@@ -1,3 +1,5 @@
+#include <cfg/cfg.h>
+
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/property_tree/ini_parser.hpp>
@@ -67,12 +69,12 @@ void write_config(const std::string &org, const std::string &username,
   path::expand(config_file);
   if (boost::filesystem::exists(config_file)) return;
 
-  boost::property_tree::ptree root;
-  root.put("Okta.organization", org);
-  root.put("Okta.username", username);
-  root.put("Okta.enable_keychain", "true");
+  cfg::ctree root;
+  root["Okta"]["organization"] = org;
+  root["Okta"]["username"] = username;
+  root["Okta"]["enable_keychain"] = "true";
 
-  write_ini(config_file, root);
+  cfg::write_ini(config_file, root);
   std::cout << "Organization and username written to configuration file."
             << std::endl;
 }

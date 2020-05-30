@@ -9,6 +9,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 FIND_PACKAGE(Boost COMPONENTS filesystem program_options regex REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
+find_package(cfg CONFIG REQUIRED)
+include_directories(${cfg})
+
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
