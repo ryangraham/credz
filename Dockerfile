@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer="ryangraham@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -21,6 +21,10 @@ ENV AWS_SDK_CPP_REQUIRED_LIBS \
 ENV BOOST \
     libboost-all-dev
 
+ENV DEPS \
+    libglib2.0-dev \
+    libsecret-1-dev
+
 ENV TOOLS \
     ca-certificates \
     curl \
@@ -35,6 +39,7 @@ RUN apt-get update \
     $BUILD_TOOLS \
     $BOOST \
     $AWS_SDK_CPP_REQUIRED_LIBS \
+    $DEPS \
     $TOOLS \
     --no-install-recommends
 
