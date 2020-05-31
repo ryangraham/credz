@@ -130,7 +130,8 @@ std::string main(const std::string &username, const std::string &password,
 
   std::string saml = okta::get_saml_assertion(app.link, session_id);
 
-  return unescape(saml);
+  unescape(saml);
+  return saml;
 }
 
 }  // namespace okta
