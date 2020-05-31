@@ -18,7 +18,7 @@ jobs:
 
   build_mac:
     macos:
-      xcode: "11.1.0"
+      xcode: "11.3.1"
     steps:
       - checkout
       - run:
