@@ -22,6 +22,21 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install cmake
+          command: brew install cmake
+      - run:
+          name: Install boost
+          command: brew install boost
+      - run:
+          name: Install aws-sdk-cpp
+          command: brew install aws-sdk-cpp
+      - run:
+          name: Install nlohmann_json
+          command: brew tap nlohmann/json && brew install nlohmann_json
+      - run:
+          name: Install cfg
+          command: brew tap ryangraham/cfg && brew install cfg
+      - run:
           name: Build
           command: make build
       - run:
