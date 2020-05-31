@@ -76,3 +76,8 @@ RUN cd /tmp \
     && git clone --depth=1 https://github.com/ryangraham/cfg.git \
     && cd cfg \
     && make install
+
+RUN cd /tmp \
+    && git clone --depth=1 https://github.com/ryangraham/keyring.git \
+    && cd keyring \
+    && make install
