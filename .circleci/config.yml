@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  build_linux:
     docker:
       - image: ryangraham/credz:0.0.7
     steps:
@@ -15,3 +15,15 @@ jobs:
       - run:
           name: Run
           command: ./build/credz --version
+
+  build_mac:
+    macos:
+      xcode: "11.1.0"
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: make build
+      - run:
+          name: Test
+          command: ./build/credz --test
