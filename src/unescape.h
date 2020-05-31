@@ -21,7 +21,7 @@ inline void unescape(std::string& input) {
 }
 
 TEST_CASE("testing html unescape") {
-  std::string input = "DEADBEEF&#x2B;123456ABCDEF&#x3D;&#x3D;123&#x3D;";
+  std::string input = "DEADBEEF&#x2b;123456ABCDEF&#x3d;&#x3d;123&#x3d;";
   std::string expected = "DEADBEEF+123456ABCDEF==123=";
 
   unescape(input);
