@@ -1,6 +1,7 @@
 
 #include "cli.h"
 
+#include <keyring/keyring.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -8,7 +9,6 @@
 #include <fstream>
 
 #include "ini.h"
-#include "keychain.h"
 #include "okta.h"
 #include "path.h"
 #include "version.h"
@@ -127,8 +127,6 @@ okta::app select_okta_app(std::vector<okta::app> apps) {
 
 void get_password(const std::string &org, const std::string &username,
                   std::string &password, bool enable_keychain) {
-#ifdef __APPLE__
-
   if (!enable_keychain) {
     password_prompt(password);
     return;
@@ -136,15 +134,12 @@ void get_password(const std::string &org, const std::string &username,
 
   std::string service_name = "credz";
   std::string account_name = org + "-" + username;
-  auto success = keychain::get_password(service_name, account_name, password);
+  int success = keyring::get_password(service_name, account_name, password);
 
-  if (!success) {
+  if (success != 0) {
     password_prompt(password);
-    keychain::set_password(service_name, account_name, password);
+    keyring::set_password(service_name, account_name, password);
   }
-#else
-  password_prompt(password);
-#endif
 }
 
 void doctest(int argc, char **argv) {

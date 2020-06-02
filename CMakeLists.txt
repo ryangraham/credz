@@ -12,23 +12,22 @@ INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 find_package(cfg CONFIG REQUIRED)
 include_directories(${cfg})
 
+find_package(keyring CONFIG REQUIRED)
+include_directories(${keyring})
+
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 find_package(AWSSDK REQUIRED COMPONENTS sts)
 
-IF(APPLE)
-	FIND_LIBRARY(SECURITY Security)
-ENDIF(APPLE)
-
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 INCLUDE_DIRECTORIES(thirdparty)
 
-add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/keychain.cc src/ini.cc)
+add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/ini.cc)
 
-TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} ${SECURITY})
+TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} keyring::keyring)
 
 add_definitions(-DPATCH_VERSION="")
 
