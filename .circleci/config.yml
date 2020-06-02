@@ -21,24 +21,24 @@ jobs:
       xcode: "11.3.1"
     steps:
       - checkout
-      - run:
-          name: brew update
-          command: brew update
+      # - run:
+      #     name: brew update
+      #     command: brew update
       - run:
           name: Install cmake
-          command: brew install cmake
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
       - run:
           name: Install boost
-          command: brew install boost
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
       - run:
           name: Install aws-sdk-cpp
-          command: brew install aws-sdk-cpp
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install aws-sdk-cpp
       - run:
           name: Install nlohmann_json
           command: brew tap nlohmann/json && brew install nlohmann_json
       - run:
           name: Install cfg
-          command: brew tap ryangraham/cfg && brew install cfg
+          command: brew tap ryangraham/cfg && HOMEBREW_NO_AUTO_UPDATE=1 brew install cfg
       - run:
           name: Build
           command: make build
