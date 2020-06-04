@@ -57,10 +57,3 @@ RUN cd /tmp/sdk/build \
     ../aws-sdk-cpp-${AWS_SDK_CPP_VERSION} \
     && make \
     && make install
-
-RUN cd /tmp \
-    && git clone https://github.com/ericniebler/range-v3.git \
-    && mkdir range-v3/build \
-    && cd range-v3/build \
-    && cmake ../. -DRANGE_V3_TESTS=OFF -DRANGE_V3_HEADER_CHECKS=OFF -DRANGE_V3_EXAMPLES=OFF -DRANGE_V3_PERF=OFF \
-    && make install
