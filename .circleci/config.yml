@@ -34,11 +34,6 @@ jobs:
           name: Install aws-sdk-cpp
           command: HOMEBREW_NO_AUTO_UPDATE=1 brew install aws-sdk-cpp
       - run:
-          name: Install cfg
-          command: >
-            HOMEBREW_NO_AUTO_UPDATE=1 brew tap ryangraham/cfg &&
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install cfg
-      - run:
           name: Build
           command: make build
       - run:
