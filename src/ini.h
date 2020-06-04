@@ -1,5 +1,5 @@
 #pragma once
-#include <cfg/cfg.h>
+#include <cfg.h>
 
 #include <string>
 

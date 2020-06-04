@@ -8,10 +8,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-FetchContent_Declare(json
+FetchContent_Declare(
+  json
   GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.7.3)
-
+  GIT_TAG v3.7.3
+)
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
   FetchContent_Populate(json)
@@ -21,11 +22,21 @@ endif()
 FIND_PACKAGE(Boost COMPONENTS filesystem program_options REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
-find_package(cfg CONFIG REQUIRED)
-include_directories(${cfg})
+FetchContent_Declare(
+  cfg
+  GIT_REPOSITORY https://github.com/ryangraham/cfg.git
+  GIT_TAG        master
+)
+FetchContent_MakeAvailable(cfg)
+include_directories(${cfg_SOURCE_DIR}/include)
 
-find_package(keyring CONFIG REQUIRED)
-include_directories(${keyring})
+FetchContent_Declare(
+  keyring
+  GIT_REPOSITORY https://github.com/ryangraham/keyring.git
+  GIT_TAG        master
+)
+FetchContent_MakeAvailable(keyring)
+include_directories(${keyring_SOURCE_DIR}/include)
 
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
@@ -39,7 +50,7 @@ INCLUDE_DIRECTORIES(thirdparty)
 
 add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/ini.cc)
 
-TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} keyring::keyring nlohmann_json::nlohmann_json)
+TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} cfg keyring nlohmann_json::nlohmann_json)
 
 add_definitions(-DPATCH_VERSION="")
 

@@ -64,13 +64,3 @@ RUN cd /tmp \
     && cd range-v3/build \
     && cmake ../. -DRANGE_V3_TESTS=OFF -DRANGE_V3_HEADER_CHECKS=OFF -DRANGE_V3_EXAMPLES=OFF -DRANGE_V3_PERF=OFF \
     && make install
-
-RUN cd /tmp \
-    && git clone --depth=1 https://github.com/ryangraham/cfg.git \
-    && cd cfg \
-    && make install
-
-RUN cd /tmp \
-    && git clone --depth=1 https://github.com/ryangraham/keyring.git \
-    && cd keyring \
-    && make install

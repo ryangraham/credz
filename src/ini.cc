@@ -1,4 +1,4 @@
-#include <cfg/cfg.h>
+#include <cfg.h>
 
 #include <filesystem>
 #include <string>
