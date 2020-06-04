@@ -59,13 +59,6 @@ RUN cd /tmp/sdk/build \
     && make install
 
 RUN cd /tmp \
-    && git clone --depth=1 https://github.com/nlohmann/json.git \
-    && mkdir json/build \
-    && cd json/build \
-    && cmake ../. -DBUILD_TESTING=OFF \
-    && make install
-
-RUN cd /tmp \
     && git clone https://github.com/ericniebler/range-v3.git \
     && mkdir range-v3/build \
     && cd range-v3/build \
