@@ -21,12 +21,12 @@ jobs:
       xcode: "11.3.1"
     steps:
       - checkout
+      - run:
+          name: Install cmake
+          command: sudo pip install --upgrade cmake
       # - run:
       #     name: brew update
       #     command: brew update
-      - run:
-          name: Install cmake
-          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
       - run:
           name: Install boost
           command: HOMEBREW_NO_AUTO_UPDATE=1 brew install boost
