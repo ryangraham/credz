@@ -19,7 +19,8 @@ if(NOT json_POPULATED)
   add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
+SET(BOOST_MIN_VERSION "1.71.0")
+FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS program_options REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
 FetchContent_Declare(
