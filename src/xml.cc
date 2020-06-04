@@ -1,11 +1,13 @@
 #include "xml.h"
 
-#include <boost/algorithm/string.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
+
+#include "doctest/doctest.h"
 
 #define ROLE_ATTRIBUTE_NAME "https://aws.amazon.com/SAML/Attributes/Role"
 
@@ -13,7 +15,14 @@ namespace xml {
 
 std::vector<std::string> split(const std::string &role) {
   std::vector<std::string> results;
-  boost::split(results, role, [](char c) { return c == ','; });
+  std::stringstream ss(role);
+
+  while (ss.good()) {
+    std::string substr;
+    std::getline(ss, substr, ',');
+    results.push_back(substr);
+  }
+
   return results;
 }
 
@@ -37,4 +46,13 @@ std::vector<role> get_roles(const std::string &assertion) {
 
   return output;
 }
+
 }  // namespace xml
+
+TEST_CASE("split arns on comma") {
+  std::string input = "role_arn,principal_arn";
+
+  auto results = xml::split(input);
+  CHECK(results[0] == "role_arn");
+  CHECK(results[1] == "principal_arn");
+}

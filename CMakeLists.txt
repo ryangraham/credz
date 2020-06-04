@@ -39,6 +39,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(keyring)
 include_directories(${keyring_SOURCE_DIR}/include)
 
+FetchContent_Declare(
+  pugixml
+  GIT_REPOSITORY https://github.com/zeux/pugixml.git
+  GIT_TAG        v1.10
+)
+FetchContent_MakeAvailable(pugixml)
+
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
