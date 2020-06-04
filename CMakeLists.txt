@@ -45,6 +45,7 @@ FetchContent_Declare(
   GIT_TAG        v1.10
 )
 FetchContent_MakeAvailable(pugixml)
+include_directories(${pugixml_SOURCE_DIR}/src)
 
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
@@ -58,7 +59,7 @@ INCLUDE_DIRECTORIES(thirdparty)
 
 add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/ini.cc)
 
-TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} cfg keyring nlohmann_json::nlohmann_json)
+TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} pugixml cfg keyring nlohmann_json::nlohmann_json)
 
 add_definitions(-DPATCH_VERSION="")
 
