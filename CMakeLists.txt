@@ -23,6 +23,9 @@ SET(BOOST_MIN_VERSION "1.71.0")
 FIND_PACKAGE(Boost ${BOOST_MIN_VERSION} COMPONENTS program_options REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+find_package(AWSSDK REQUIRED COMPONENTS sts)
+
 FetchContent_Declare(
   cfg
   GIT_REPOSITORY https://github.com/ryangraham/cfg.git
@@ -50,16 +53,13 @@ include_directories(${pugixml_SOURCE_DIR}/src)
 find_package(CURL REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-find_package(AWSSDK REQUIRED COMPONENTS sts)
-
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 INCLUDE_DIRECTORIES(thirdparty)
 
 add_executable(credz src/main.cc src/aws.cc src/okta.cc src/cli.cc src/xml.cc src/ini.cc)
 
-TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} pugixml cfg keyring nlohmann_json::nlohmann_json)
+TARGET_LINK_LIBRARIES(credz LINK_PUBLIC ${Boost_LIBRARIES} curl ${AWSSDK_LINK_LIBRARIES} cfg keyring nlohmann_json::nlohmann_json pugixml)
 
 add_definitions(-DPATCH_VERSION="")
 
